@@ -13,7 +13,7 @@ SELECT
 	fb.property_csat_rating AS csat,
 	fb.property_nps_rating AS nps,
 	fb.property_rating AS rating,
-	fb.property_submission,
+	fb.property_survey_response,
 	MAX(MAX(fb._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
 FROM hubs.customer_feedback_submissions AS fb
 -- find contact associated with submission
