@@ -5,6 +5,8 @@ SELECT
 	com.property_name AS company,
 	com.property_sector_grouped_ AS sector,
 	com.property_country_menu_ AS country,
+	contact.property_firstname AS first_name,
+	contact.property_lastname AS last_name,
 	fb.property_survey_name,
 	fb.property_survey_submission_date AS date_submitted,
 	fb.created_at::DATE AS date_created,
@@ -14,12 +16,19 @@ SELECT
 	fb.property_submission,
 	MAX(MAX(fb._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
 FROM hubs.customer_feedback_submissions AS fb
-INNER JOIN hubs.customer_feedback_submissions_to_company AS fc
+-- find contact associated with submission
+INNER JOIN hubs.customer_feedback_submissions_to_contact AS fc
 	ON fb.id = fc.from_id
+-- find company associated with contact
+INNER JOIN hubs.contact_company AS cc
+	ON fc.to_id = cc.contact_id
+	AND cc.type_id = 1 -- ensure it's the primary company for the contact
 INNER JOIN hubs.company AS com
-	ON fc.to_id = com.id
+	ON cc.company_id = com.id
+INNER JOIN hubs.contact AS contact
+	ON fc.to_id = contact.id	
 WHERE
 	1 = 1
 	AND com.id NOT IN (9244595755, 9457745973) -- exclude submissions from Terrascope and The Neighbourhood
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 		
