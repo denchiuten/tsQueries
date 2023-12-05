@@ -1,4 +1,5 @@
-SELECT
+SELECT DISTINCT
+	property_sector_grouped_,
 	fb.id AS feedback_id,
 	fb.property_survey_type,
 	com.id AS company_id,
@@ -14,6 +15,8 @@ SELECT
 	fb.property_nps_rating AS nps,
 	fb.property_rating AS rating,
 	fb.property_survey_response,
+	com_to_csm.csm_first,
+	com_to_csm.csm_last,
 	MAX(MAX(fb._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
 FROM hubs.customer_feedback_submissions AS fb
 -- find contact associated with submission
@@ -27,8 +30,25 @@ INNER JOIN hubs.company AS com
 	ON cc.company_id = com.id
 INNER JOIN hubs.contact AS contact
 	ON fc.to_id = contact.id	
+LEFT JOIN (
+	SELECT DISTINCT
+		dc.company_id,
+		deal.property_dealname,
+		csm.first_name AS csm_first,
+		csm.last_name AS csm_last
+	FROM hubs.deal_company AS dc
+	INNER JOIN hubs.deal AS deal
+		ON dc.deal_id = deal.deal_id
+		AND deal.deal_pipeline_id = 11272062 -- ID for Customer Success deal pipeline
+		AND deal.property_customer_success_manager IS NOT NULL
+	LEFT JOIN hubs.owner AS csm
+		ON deal.property_customer_success_manager = csm.owner_id
+	WHERE
+		1 = 1
+		AND dc.type_id = 5
+) AS com_to_csm
+	ON com.id = com_to_csm.company_id
 WHERE
 	1 = 1
 	AND com.id NOT IN (9244595755, 9457745973) -- exclude submissions from Terrascope and The Neighbourhood
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-		
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
