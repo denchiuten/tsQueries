@@ -31,7 +31,7 @@ LEFT JOIN bob.employee_out_of_office AS ooo
 	ON emp.id = ooo.employee_id
 	AND t.spent_date BETWEEN ooo.start_date AND ooo.end_date
 LEFT JOIN hubs.deal AS deal
-	ON p.id = deal.deal_id
+	ON p.code = deal.deal_id
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
 
 UNION ALL
