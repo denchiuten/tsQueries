@@ -51,6 +51,6 @@ LEFT JOIN (
 WHERE
 	1 = 1
 	AND (com.id IS NULL OR com.id NOT IN (9244595755, 9457745973)) -- exclude submissions from Terrascope and The Neighbourhood
-	AND LOWER(fb.property_survey_name) LIKE '%csm%'
 	AND fb.is_merged IS FALSE
+	AND fb.id != 10929980569 -- exclude one duplicate submission
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
