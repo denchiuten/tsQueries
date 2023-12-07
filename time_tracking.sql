@@ -13,10 +13,10 @@ SELECT
 	deal.property_product_tier AS tier,
 	SUM(rounded_hours) AS hours,
 	MAX(MAX(u._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to 
-FROM harvest.time_entry AS t
+FROM harvest.vw_time_entry_latest AS t
 INNER JOIN harvest.task AS task
 	ON t.task_id = task.id
-INNER JOIN harvest.users AS u
+INNER JOIN harvest.vw_userslatest AS u
 	ON t.user_id = u.id
 INNER JOIN harvest.role_user AS role_user
 	ON u.id = role_user.role_user_id
@@ -40,7 +40,7 @@ UNION ALL
 
 -- dummy NULL rows when employees are on leave
 SELECT
-	NULL AS project_id,
+	NULL::INT AS project_id,
 	NULL AS project,
 	NULL AS company,
 	role.name AS team,
@@ -48,13 +48,13 @@ SELECT
 	emp.surname AS last_name,
 	d.date AS spent_date,
 	ooo.policy_type_display_name AS status,
-	NULL AS budget,
+	0 AS budget,
 	FALSE AS billable,
 	NULL AS task_name,
 	NULL AS tier,
 	0 AS hours,
 	MAX(MAX(u._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
-FROM  harvest.users AS u
+FROM  harvest.vw_users_latest AS u
 INNER JOIN harvest.role_user AS role_user
 	ON u.id = role_user.role_user_id
 INNER JOIN harvest.role AS role
