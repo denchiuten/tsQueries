@@ -1,4 +1,5 @@
 SELECT
+	p.id AS project_id,
 	p.name AS project,
 	com.property_name AS company,
 	role.name AS team,
@@ -31,12 +32,13 @@ LEFT JOIN bob.employee_out_of_office AS ooo
 	AND t.spent_date BETWEEN ooo.start_date AND ooo.end_date
 LEFT JOIN hubs.deal AS deal
 	ON p.id = deal.deal_id
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
 
 UNION ALL
 
 -- dummy NULL rows when employees are on leave
 SELECT
+	NULL AS project_id,
 	NULL AS project,
 	NULL AS company,
 	role.name AS team,
