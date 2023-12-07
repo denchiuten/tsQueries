@@ -9,6 +9,7 @@ SELECT
 	p.budget,
 	t.billable,
 	task.name AS task_name,
+	deal.property_product_tier AS tier,
 	SUM(rounded_hours) AS hours
 FROM harvest.time_entry AS t
 INNER JOIN harvest.task AS task
@@ -28,7 +29,9 @@ LEFT JOIN bob.employee AS emp
 LEFT JOIN bob.employee_out_of_office AS ooo
 	ON emp.id = ooo.employee_id
 	AND t.spent_date BETWEEN ooo.start_date AND ooo.end_date
-GROUP BY 1,2,3,4,5,6,7,8,9,10
+LEFT JOIN hubs.deal AS deal
+	ON p.id = deal.deal_id
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11
 
 UNION ALL
 
@@ -44,6 +47,7 @@ SELECT
 	NULL AS budget,
 	FALSE AS billable,
 	NULL AS task_name,
+	NULL AS tier,
 	0 AS hours
 FROM  harvest.users AS u
 INNER JOIN harvest.role_user AS role_user
