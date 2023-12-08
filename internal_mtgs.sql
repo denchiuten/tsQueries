@@ -2,13 +2,15 @@ SELECT
 	att.email,
 	bob.full_name AS name,
 	bob.work_department AS department,
-	bob.work_title AS title,
 	bob.work_manager AS manager,
 	bob.work_second_level_manager AS second_level_manager,
 	ev.start_date_time::DATE AS date	,
 	ev.id AS event_id,
 	ev.summary,
-	DATEDIFF(MINUTE, ev.start_date_time::TIMESTAMP, ev.end_date_time::TIMESTAMP) AS total_minutes
+	ev.start_date_time,
+	ev.end_date_time,
+	DATEDIFF(MINUTE, ev.start_date_time::TIMESTAMP, ev.end_date_time::TIMESTAMP) AS total_minutes,
+	MAX(MAX(att._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
 FROM gcal.attendee AS att
 INNER JOIN bob.employee AS bob
 	ON att.email = bob.email
@@ -50,3 +52,4 @@ WHERE
 	AND att.response_status = 'accepted'
 	AND LOWER(ev.summary) NOT LIKE '%focus time%'
 	AND LOWER(ev.summary) NOT LIKE '%annual leave%'
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11	
