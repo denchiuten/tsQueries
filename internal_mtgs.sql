@@ -6,7 +6,9 @@ SELECT
 	bob.work_manager AS manager,
 	bob.work_second_level_manager AS second_level_manager,
 	ev.start_date_time::DATE AS date	,
-	SUM(DATEDIFF(MINUTE, ev.start_date_time::TIMESTAMP, ev.end_date_time::TIMESTAMP)) AS total_minutes
+	ev.id AS event_id,
+	ev.summary,
+	DATEDIFF(MINUTE, ev.start_date_time::TIMESTAMP, ev.end_date_time::TIMESTAMP) AS total_minutes
 FROM gcal.attendee AS att
 INNER JOIN bob.employee AS bob
 	ON att.email = bob.email
@@ -43,16 +45,8 @@ LEFT JOIN (
 	ON ev.id = ext.event_id
 WHERE
 	1 = 1	
-
 	AND ext.event_id IS NULL -- 	filter out the meetings external attendees
 	AND ev.start_date_time::DATE < CURRENT_DATE
 	AND att.response_status = 'accepted'
-	AND ev.summary != 'Friday Focus Time'
-GROUP BY
-	1,
-	2,
-	3,
-	4,
-	5,
-	6,
-	7
+	AND LOWER(ev.summary) NOT LIKE '%focus time%'
+	AND LOWER(ev.summary) NOT LIKE '%annual leave%'
