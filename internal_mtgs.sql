@@ -2,9 +2,10 @@ SELECT
 	att.email,
 	bob.full_name AS name,
 	bob.work_department AS department,
-	bob.work_manager AS manager,
-	bob.work_second_level_manager AS second_level_manager,
-	ev.start_date_time::DATE AS date	,
+	COALESCE(bob.work_manager, 'Suresh Sundararajan') AS manager,
+	COALESCE(bob.work_second_level_manager, 'Suresh Sundararajan') AS second_level_manager,
+	ev.start_date_time::DATE AS date,
+	d.week_ending_date,
 	ev.id AS event_id,
 	ev.summary,
 	ev.start_date_time,
@@ -19,6 +20,9 @@ INNER JOIN gcal.event AS ev
 	ON att.event_id = ev.id
 	AND ev.event_type NOT IN ('outOfOffice', 'focusTime')
 	AND ev.status = 'confirmed'
+INNER JOIN plumbing.dates AS d
+	ON ev.start_date_time::DATE = d.date
+	AND d.week_ending_date <= CURRENT_DATE -- include completed weeks only
 -- only include meetings with > 1 attendee
 INNER JOIN (
 	SELECT event_id
@@ -48,8 +52,9 @@ LEFT JOIN (
 WHERE
 	1 = 1	
 	AND ext.event_id IS NULL -- 	filter out the meetings external attendees
-	AND ev.start_date_time::DATE < CURRENT_DATE
 	AND att.response_status = 'accepted'
 	AND LOWER(ev.summary) NOT LIKE '%focus time%'
 	AND LOWER(ev.summary) NOT LIKE '%annual leave%'
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11	
+
+
