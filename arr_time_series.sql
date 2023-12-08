@@ -7,8 +7,9 @@ SELECT
 	owner.first_name || ' ' || owner.last_name AS owner,
 	DATE_TRUNC('month', deal.property_hs_closed_won_date)::DATE AS closed_date,
 	DATE_TRUNC('month', deal.property_end_date)::DATE AS end_date, 
-	SUM(property_arr_usd_) AS arr,
-	SUM(property_hs_acv) AS acv,
+	SUM(deal.property_arr_usd_) AS arr,
+	SUM(deal.property_hs_acv) AS acv,
+	SUM(deal.property_hs_tcv) AS tcv,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
@@ -28,5 +29,5 @@ INNER JOIN (
 	ON all_dates.obs_date BETWEEN DATE_TRUNC('month', deal.property_hs_closed_won_date) AND DATE_TRUNC('month', deal.property_end_date)
 WHERE
 	1 = 1
-	AND property_arr_usd_ + property_hs_acv > 0
+	AND deal.property_arr_usd_ + deal.property_hs_acv + deal.property_hs_tcv > 0
 GROUP BY 1,2,3,4,5,6,7,8
