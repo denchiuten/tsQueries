@@ -21,7 +21,7 @@ INNER JOIN jra.priority AS priority
   ON i.priority = priority.id
 LEFT JOIN jra.vw_latest_issue_field_value AS latest
   ON i.id = latest.issue_id
-  AND latest.field_id ='customfield_11118'
+  AND latest.field_id ='customfield_11118' -- field_id for Severity custom field
 LEFT JOIN (
   SELECT 
     h.issue_id,
