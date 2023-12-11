@@ -27,6 +27,7 @@ INNER JOIN hubs.deal_stage AS ds
 	ON deal.deal_id = ds.deal_id
 INNER JOIN hubs.deal_pipeline_stage AS int_stages
 	ON ds.value = int_stages.stage_id
+	AND int_stages.pipeline_id = 19800993 -- ID for 'Sales Pipeline v2'
 INNER JOIN hubs.owner AS o
 	ON deal.owner_id = o.owner_id
 WHERE
