@@ -1,0 +1,1 @@
+SELECT DISTINCT event_type from gcal."event"

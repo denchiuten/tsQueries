@@ -1,0 +1,1 @@
+SELECT DISTINCT status from gcal.event

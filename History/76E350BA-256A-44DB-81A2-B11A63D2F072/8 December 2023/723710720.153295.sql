@@ -1,0 +1,1 @@
+SELECT DISTINCT response_status from gcal.attendee

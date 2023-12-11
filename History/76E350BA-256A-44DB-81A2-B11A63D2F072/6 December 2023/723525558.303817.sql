@@ -1,0 +1,2 @@
+SELECT DISTINCT property_survey_name
+FROM hubs.customer_feedback_submissions
