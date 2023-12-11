@@ -5,7 +5,8 @@ WITH query AS (
 		current_stage.label AS current_stage,
 		int_stages.label AS int_stage,
 		o.first_name || ' ' || o.last_name AS bdm,
-		COUNT(DISTINCT deal.deal_id) AS n
+		COUNT(DISTINCT deal.deal_id) AS n,
+		MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
 	FROM hubs.deal AS deal
 	INNER JOIN hubs.deal_pipeline_stage AS current_stage
 		ON deal.deal_pipeline_stage_id = current_stage.stage_id
@@ -41,6 +42,7 @@ SELECT
 	current_stage,
 	int_stage,
 	bdm,
-	-n
+	-n,
+	data_up_to
 FROM query
 	
