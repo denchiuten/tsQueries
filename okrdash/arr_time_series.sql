@@ -2,7 +2,7 @@ SELECT
 	all_dates.obs_date,
 	deal.property_dealname AS deal,
 	com.property_name AS child_name,
-	cp.parent_name AS parent_name.
+	cp.parent_name AS parent_name,
 	com.property_country_menu_ AS country,
 	com.property_sector_grouped_ AS sector,
 	owner.first_name || ' ' || owner.last_name AS owner,
