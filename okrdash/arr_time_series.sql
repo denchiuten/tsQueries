@@ -1,7 +1,8 @@
 SELECT
 	all_dates.obs_date,
 	deal.property_dealname AS deal,
-	com.property_name AS company,
+	com.property_name AS child_name,
+	cp.parent_name AS parent_name.
 	com.property_country_menu_ AS country,
 	com.property_sector_grouped_ AS sector,
 	owner.first_name || ' ' || owner.last_name AS owner,
@@ -14,11 +15,13 @@ SELECT
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
 	ON deal.deal_id = dc.deal_id
-	AND dc.type_id = 5
+	AND dc.type_id = 5 -- primary company only
 INNER JOIN hubs.owner AS owner
 	ON deal.owner_id = owner.owner_id
 INNER JOIN hubs.company AS com
 	ON dc.company_id = com.id
+LEFT JOIN hubs.vw_child_to_parent AS cp
+	ON com.id = cp.child_id 
 INNER JOIN hubs.deal_pipeline_stage AS stage
 	ON deal.deal_pipeline_stage_id = stage.stage_id
 	AND stage.label = '#09 WON'
@@ -30,4 +33,4 @@ INNER JOIN (
 WHERE
 	1 = 1
 	AND deal.property_arr_usd_ + deal.property_hs_acv + deal.property_hs_tcv > 0
-GROUP BY 1,2,3,4,5,6,7,8
+GROUP BY 1,2,3,4,5,6,7,8,9
