@@ -10,7 +10,7 @@ SELECT
 	owner.first_name AS owner_first_name,
 	owner.last_name AS owner_last_name,
 	owner.email AS owner_email,
-	SUM(deal.property_hs_tcv) AS tcv,
+	deal.property_hs_tcv AS tcv,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated	
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
@@ -27,4 +27,4 @@ INNER JOIN hubs.deal_pipeline_stage AS stage
 WHERE
 	1 = 1
 	AND deal.deal_pipeline_id = 19800993
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
