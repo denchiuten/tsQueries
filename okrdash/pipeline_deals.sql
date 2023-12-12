@@ -10,7 +10,7 @@ SELECT
 	owner.first_name AS owner_first_name,
 	owner.last_name AS owner_last_name,
 	owner.email AS owner_email,
-	deal.property_hs_tcv AS tcv,
+	COALESCE(deal.property_hs_tcv,0) AS tcv,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated	
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
