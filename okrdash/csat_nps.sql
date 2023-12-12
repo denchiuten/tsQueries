@@ -2,7 +2,8 @@ SELECT DISTINCT
 	fb.id AS feedback_id,
 	fb.property_survey_type,
 	com.id AS company_id,
-	com.property_name AS company,
+	com.property_name AS company_child,
+	cp.parent_name AS company_parent,
 	com.property_sector_grouped_ AS sector,
 	com.property_country_menu_ AS country,
 	contact.property_firstname AS first_name,
@@ -27,6 +28,8 @@ LEFT JOIN hubs.contact_company AS cc
 	AND cc.type_id = 1 -- ensure it's the primary company for the contact
 LEFT JOIN hubs.company AS com
 	ON cc.company_id = com.id
+LEFT JOIN hubs.vw_child_to_parent AS cp
+	ON com.id = cp.child_id
 INNER JOIN hubs.contact AS contact
 	ON fc.to_id = contact.id	
 	AND contact.property_email NOT LIKE '%@terrascope.com'
