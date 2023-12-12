@@ -2,13 +2,15 @@ SELECT
 	deal.deal_id,
 	stage.label AS stage,
 	deal.property_dealname AS deal,
-	com.property_name AS company,
+	com.property_name AS company_child,
+	cp.parent_name As company_parent,
 	com.property_sector_grouped_ AS sector,
 	com.property_country_menu_ AS country,
 	deal.property_hs_createdate::DATE AS date_created,
 	owner.first_name AS owner_first_name,
 	owner.last_name AS owner_last_name,
 	owner.email AS owner_email,
+	SUM(deal.property_hs_tcv) AS tcv,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated	
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
@@ -25,4 +27,4 @@ INNER JOIN hubs.deal_pipeline_stage AS stage
 WHERE
 	1 = 1
 	AND deal.deal_pipeline_id = 19800993
-GROUP BY 1,2,3,4,5,6,7,8,9,10
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11
