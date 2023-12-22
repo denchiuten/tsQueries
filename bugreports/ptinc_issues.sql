@@ -31,3 +31,6 @@ LEFT JOIN (
   GROUP BY 1
 ) AS u
   ON i.id = u.issue_id
+WHERE
+	1 = 1
+	AND i._fivetran_deleted IS FALSE
