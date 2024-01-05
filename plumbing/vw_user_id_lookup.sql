@@ -7,6 +7,7 @@ SELECT
 	n.id AS notion_user_id,
 	l.id AS linear_user_id,
 	hub.id AS hubspot_user_id,
+	hub_o.owner_id AS hubspot_owner_id,
 	j.id AS jira_user_id,
 	har.id AS harvest_user_id
 FROM slack.users AS s
@@ -25,6 +26,9 @@ LEFT JOIN linear.users AS l
 LEFT JOIN hubs.users AS hub
 	ON LOWER(s.profile_email) = LOWER(hub.email)
 	AND hub._fivetran_deleted IS FALSE
+LEFT JOIN hubs.owner AS hub_o
+	ON LOWER(s.profile_email) = LOWER(hub_o.email)
+	AND hub_o.is_active IS TRUE
 LEFT JOIN jra.user AS j
 	ON LOWER(s.profile_email) = LOWER(j.email)
 	AND j.is_active IS TRUE
@@ -39,4 +43,5 @@ WHERE
 	AND s.is_bot IS FALSE
 	AND s.deleted IS FALSE
 	AND s.profile_email IS NOT NULL
-);
+)
+ORDER BY 1;
