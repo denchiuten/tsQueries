@@ -57,23 +57,7 @@ CREATE VIEW plumbing.vw_tool_users AS (
 	WHERE
 		1 = 1
 		AND hub_u._fivetran_deleted IS FALSE
-		
-	UNION ALL
-	
-	SELECT
-		'Slack' AS tool,
-		LOWER(slack_u.profile_email) AS email,
-		slack_u.id AS user_id,
-		COALESCE(emp.internal_status, 'Unknown') AS bob_status
-	FROM slack.users AS slack_u
-	LEFT JOIN bob.employee AS emp
-		ON LOWER(slack_u.profile_email) = LOWER(emp.email)
-	WHERE
-		1 = 1
-		AND slack_u._fivetran_deleted IS FALSE
-		AND slack_u.is_bot IS FALSE
-		AND slack_u.deleted IS FALSE
-		
+				
 	UNION ALL
 	
 	SELECT
