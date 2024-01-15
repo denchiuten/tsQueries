@@ -28,21 +28,6 @@ CREATE VIEW plumbing.vw_tool_users AS (
 		AND slack_u._fivetran_deleted IS FALSE
 		AND slack_u.is_bot IS FALSE
 		AND slack_u.deleted IS FALSE
-		
-	UNION ALL
-	
-	SELECT
-		'Linear' AS tool,
-		LOWER(lin_u.email) AS email,
-		lin_u.id AS user_id,
-		COALESCE(emp.internal_status, 'Unknown') AS bob_status
-	FROM linear.users AS lin_u
-	LEFT JOIN bob.employee AS emp
-		ON LOWER(lin_u.email) = LOWER(emp.email)
-	WHERE
-		1 = 1
-		AND lin_u._fivetran_deleted IS FALSE
-		AND lin_u.active IS TRUE
 	
 	UNION ALL
 	
