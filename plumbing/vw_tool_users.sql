@@ -28,6 +28,7 @@ CREATE VIEW plumbing.vw_tool_users AS (
 		AND slack_u._fivetran_deleted IS FALSE
 		AND slack_u.is_bot IS FALSE
 		AND slack_u.deleted IS FALSE
+		AND slack_u.name <> 'slackbot'
 	
 	UNION ALL
 	
