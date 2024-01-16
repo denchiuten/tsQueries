@@ -1,5 +1,5 @@
 DROP VIEW IF EXISTS bob.vw_ooo_dates;
-CREATE VIEW bob.vw_ooo_dates (
+CREATE VIEW bob.vw_ooo_dates AS (
     SELECT 
         ooo.employee_id, 
         LOWER(e.email) AS email,
