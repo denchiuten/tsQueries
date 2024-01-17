@@ -1,6 +1,7 @@
 SELECT
   i.key,
   i.summary,
+  i.description,
   users.name AS assignee,
   priority.name AS priority,
   latest.value AS severity,
