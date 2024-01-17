@@ -9,7 +9,9 @@ SELECT
   'https://gpventure.atlassian.net/browse/' || i.key AS url,
   i.created AS date_created,
   u.first_update,
-  i.resolved AS date_resolved
+  i.resolved AS date_resolved,
+  rca.value AS rca,
+  sd.value AS solution_doc
 FROM jra.issue AS i
 INNER JOIN jra.project AS p
   ON i.project = p.id
@@ -23,6 +25,13 @@ INNER JOIN jra.priority AS priority
 LEFT JOIN jra.vw_latest_issue_field_value AS latest
   ON i.id = latest.issue_id
   AND latest.field_id ='customfield_11118' -- field_id for Severity custom field
+LEFT JOIN jra.vw_latest_issue_field_value AS rca
+  ON i.id = rca.issue_id
+  AND rca.field_id ='customfield_11191' -- field_id for RCA custom field
+LEFT JOIN jra.vw_latest_issue_field_value AS sd
+  ON i.id = sd.issue_id
+  AND sd.field_id ='customfield_11194' -- field_id for RCA custom field
+  
 LEFT JOIN (
   SELECT 
     h.issue_id,
