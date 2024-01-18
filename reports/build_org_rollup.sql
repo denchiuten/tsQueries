@@ -1,5 +1,6 @@
 SELECT
 	e.payroll_employment_type AS employment_type,
+	e.work_site,
 	e.email,
 	e.first_name,
 	e.surname,
