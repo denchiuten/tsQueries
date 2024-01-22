@@ -4,7 +4,7 @@ SELECT
 	deal.property_dealname AS deal,
 	com.property_name AS company_child,
 	cp.parent_name As company_parent,
-	COALESCE(com.property_sector_grouped_, '*Sector Missing') AS sector,
+	COALESCE(opt.label, '*Sector Missing') AS sector,
 	COALESCE(com.property_country_menu_, '*Country Missing') AS country,
 	deal.property_hs_createdate::DATE AS date_created,
 	deal.property_end_date::DATE AS end_date, 
@@ -27,6 +27,17 @@ INNER JOIN hubs.owner AS owner
 	ON deal.owner_id = owner.owner_id
 INNER JOIN hubs.deal_pipeline_stage AS stage
 	ON deal.deal_pipeline_stage_id = stage.stage_id
+LEFT JOIN hubs.property_option AS opt
+	ON com.property_sector_grouped_ = opt.value
+	AND opt.property_id = 'LvhF5AouIjxudPghzI6sPeTQQis=' -- property_id for sector_grouped_
+	AND opt.label NOT IN (
+		'Other', 
+		'Tier 2 - Industrials/CPG/Retail', 
+		'Tier 3 - TMT/Fashion/Textile/Luxury', 
+		'Tier 4 - Trans/Log/R.estate/Cons/Hospitality', 
+		''
+	)
+
 WHERE
 	1 = 1
 	AND deal.deal_pipeline_id = 19800993

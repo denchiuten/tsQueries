@@ -1,10 +1,10 @@
-SELECT DISTINCT
+SELECT
 	fb.id AS feedback_id,
 	fb.property_survey_type,
 	com.id AS company_id,
 	com.property_name AS company_child,
 	cp.parent_name AS company_parent,
-	com.property_sector_grouped_ AS sector,
+	COALESCE(opt.label, '*Sector Missing') AS sector,
 	com.property_country_menu_ AS country,
 	contact.property_firstname AS first_name,
 	contact.property_lastname AS last_name,
@@ -28,6 +28,16 @@ LEFT JOIN hubs.contact_company AS cc
 	AND cc.type_id = 1 -- ensure it's the primary company for the contact
 LEFT JOIN hubs.company AS com
 	ON cc.company_id = com.id
+LEFT JOIN hubs.property_option AS opt
+	ON com.property_sector_grouped_ = opt.value
+	AND opt.property_id = 'LvhF5AouIjxudPghzI6sPeTQQis=' -- property_id for sector_grouped_
+	AND opt.label NOT IN (
+		'Other', 
+		'Tier 2 - Industrials/CPG/Retail', 
+		'Tier 3 - TMT/Fashion/Textile/Luxury', 
+		'Tier 4 - Trans/Log/R.estate/Cons/Hospitality', 
+		''
+	)
 LEFT JOIN hubs.vw_child_to_parent AS cp
 	ON com.id = cp.child_id
 INNER JOIN hubs.contact AS contact
@@ -56,4 +66,4 @@ WHERE
 	AND (com.id IS NULL OR com.id NOT IN (9244595755, 9457745973)) -- exclude submissions from Terrascope and The Neighbourhood
 	AND fb.is_merged IS FALSE
 	AND fb.id != 10929980569 -- exclude one duplicate submission
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18

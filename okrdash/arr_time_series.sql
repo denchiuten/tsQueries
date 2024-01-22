@@ -4,7 +4,7 @@ SELECT
 	com.property_name AS child_name,
 	cp.parent_name AS parent_name,
 	com.property_country_menu_ AS country,
-	opt.label AS sector,
+	COALESCE(opt.label, '*Sector Missing') AS sector,
 	owner.first_name || ' ' || owner.last_name AS owner,
 	DATE_TRUNC('month', deal.property_hs_closed_won_date)::DATE AS closed_date,
 	DATE_TRUNC('month', deal.property_end_date)::DATE AS end_date, 
@@ -30,7 +30,7 @@ INNER JOIN (
 	FROM plumbing.dates
 ) AS all_dates
 	ON all_dates.obs_date BETWEEN DATE_TRUNC('month', deal.property_hs_closed_won_date) AND DATE_TRUNC('month', deal.property_end_date)
-INNER JOIN hubs.property_option AS opt
+LEFT JOIN hubs.property_option AS opt
 	ON com.property_sector_grouped_ = opt.value
 	AND opt.property_id = 'LvhF5AouIjxudPghzI6sPeTQQis=' -- property_id for sector_grouped_
 	AND opt.label NOT IN (
