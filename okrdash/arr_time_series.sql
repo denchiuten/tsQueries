@@ -4,7 +4,7 @@ SELECT
 	com.property_name AS child_name,
 	cp.parent_name AS parent_name,
 	com.property_country_menu_ AS country,
-	com.property_sector_grouped_ AS sector,
+	opt.label AS sector,
 	owner.first_name || ' ' || owner.last_name AS owner,
 	DATE_TRUNC('month', deal.property_hs_closed_won_date)::DATE AS closed_date,
 	DATE_TRUNC('month', deal.property_end_date)::DATE AS end_date, 
@@ -30,6 +30,16 @@ INNER JOIN (
 	FROM plumbing.dates
 ) AS all_dates
 	ON all_dates.obs_date BETWEEN DATE_TRUNC('month', deal.property_hs_closed_won_date) AND DATE_TRUNC('month', deal.property_end_date)
+INNER JOIN hubs.property_option AS opt
+	ON com.property_sector_grouped_ = opt.value
+	AND opt.property_id = 'LvhF5AouIjxudPghzI6sPeTQQis=' -- property_id for sector_grouped_
+	AND opt.label NOT IN (
+		'Other', 
+		'Tier 2 - Industrials/CPG/Retail', 
+		'Tier 3 - TMT/Fashion/Textile/Luxury', 
+		'Tier 4 - Trans/Log/R.estate/Cons/Hospitality', 
+		''
+	)
 WHERE
 	1 = 1
 	AND deal.property_arr_usd_ + deal.property_hs_acv + deal.property_hs_tcv > 0
