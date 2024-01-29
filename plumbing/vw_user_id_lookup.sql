@@ -9,7 +9,8 @@ SELECT
 	hub.id AS hubspot_user_id,
 	hub_o.owner_id AS hubspot_owner_id,
 	j.id AS jira_user_id,
-	har.id AS harvest_user_id
+	har.id AS harvest_user_id,
+	t.id AS tableau_user_id
 FROM slack.users AS s
 LEFT JOIN bob.employee AS b
 	ON LOWER(s.profile_email) = LOWER(b.email)
@@ -37,6 +38,10 @@ LEFT JOIN harvest.vw_users_latest AS har
 	ON LOWER(s.profile_email) = LOWER(har.email)
 	AND har._fivetran_deleted IS FALSE
 	AND har.is_active IS TRUE
+LEFT JOIN tableau.users AS t
+	ON LOWER(s.profile_email) = LOWER(t.email) 
+	AND t.email IS NOT NULL
+	AND t._fivetran_deleted IS FALSE
 WHERE
 	1 = 1
 	AND s._fivetran_deleted IS FALSE

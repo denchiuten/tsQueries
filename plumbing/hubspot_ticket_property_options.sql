@@ -12,3 +12,4 @@ WHERE
 	1 = 1
 	AND p.hubspot_object = 'ticket'
 ORDER BY 1,4,5
+
