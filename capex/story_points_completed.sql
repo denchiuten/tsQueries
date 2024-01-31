@@ -1,5 +1,8 @@
 SELECT
 	p.name AS project_name,
+	p.started_at:: DATE AS project_start_date,
+	p.target_date::DATE AS project_target_date,
+	p.completed_at::DATE AS project_completed_date,
 	t.name AS team_name,
 	t.key AS team_key,
 	u.email AS assignee_email,
@@ -36,4 +39,4 @@ WHERE
 	1 = 1
 	AND r._fivetran_deleted IS FALSE
 	AND r.name = '2024 Features Roadmap'
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
