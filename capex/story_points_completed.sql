@@ -9,7 +9,7 @@ SELECT
 	i.id AS issue_id,
 	i.identifier AS issue_key,
 	i.title AS issue_title,
-	i.estimate,
+	COALESCE(i.estimate, 1) AS estimate,
 	MAX(MAX(i._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
 FROM linear.roadmap AS r
 INNER JOIN linear.roadmap_to_project AS rp
