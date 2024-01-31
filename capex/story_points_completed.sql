@@ -1,5 +1,6 @@
 SELECT
 	p.name AS project_name,
+	lead.name AS project_lead,
 	p.started_at:: DATE AS project_start_date,
 	p.target_date::DATE AS project_target_date,
 	p.completed_at::DATE AS project_completed_date,
@@ -31,6 +32,8 @@ INNER JOIN linear.team AS t
 	ON i.team_id = t.id
 INNER JOIN linear.users AS u
 	ON i.assignee_id = u.id
+INNER JOIN linear.users AS lead
+	ON p.lead_id = lead.id
 INNER JOIN bob.employee AS b
 	ON LOWER(u.email) = LOWER(b.email)
 INNER JOIN google_sheets.capex_mapping AS cpm
@@ -39,4 +42,4 @@ WHERE
 	1 = 1
 	AND r._fivetran_deleted IS FALSE
 	AND r.name = '2024 Features Roadmap'
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
