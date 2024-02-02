@@ -5,8 +5,10 @@ SELECT
 	com.property_name AS company_child,
 	cp.parent_name As company_parent,
 	COALESCE(opt.label, '*Sector Missing') AS sector,
+	COALESCE(ind_opt.label, '*Industry Missing') AS industry,
 	COALESCE(com.property_country_menu_, '*Country Missing') AS country,
 	deal.property_hs_createdate::DATE AS date_created,
+	deal.property_closedate::DATE AS close_date,
 	deal.property_end_date::DATE AS end_date, 
 	COALESCE(deal.property_hs_tcv,0) AS tcv,
 	COALESCE(deal.property_hs_acv,0) AS acv,
@@ -32,8 +34,10 @@ LEFT JOIN hubs.property_option AS opt
 		'Tier 4 - Trans/Log/R.estate/Cons/Hospitality', 
 		''
 	)
-
+LEFT JOIN hubs.property_option AS ind_opt
+	ON com.property_industry = ind_opt.value
+	AND ind_opt.property_id = 'MNb4LKB3CdQneBw6/CdXw5gj0o0=' -- property_id for industry
 WHERE
 	1 = 1
 	AND deal.deal_pipeline_id = 19800993 -- id for sales_pipeline_v2
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
