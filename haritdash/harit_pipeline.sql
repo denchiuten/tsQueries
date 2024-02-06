@@ -9,6 +9,7 @@ SELECT
 	COALESCE(com.property_country_menu_, '*Country Missing') AS country,
 	deal.property_hs_createdate::DATE AS date_created,
 	deal.property_closedate::DATE AS close_date,
+	deal.property_commencement_date::DATE AS start_date,
 	deal.property_end_date::DATE AS end_date, 
 	COALESCE(deal.property_hs_tcv,0) AS tcv,
 	COALESCE(deal.property_hs_acv,0) AS acv,
@@ -40,4 +41,4 @@ LEFT JOIN hubs.property_option AS ind_opt
 WHERE
 	1 = 1
 	AND deal.deal_pipeline_id = 19800993 -- id for sales_pipeline_v2
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
