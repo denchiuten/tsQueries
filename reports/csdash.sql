@@ -2,6 +2,7 @@ SELECT
 	stage.ticket_state,
 	stage.label AS stage_label,
 	t.id AS ticket_object_id,
+	COALESCE(org.name, 'N/A') AS data_plane,
 	t.property_hs_primary_company_id,
 	t.property_hs_primary_company_name,
 	t.property_subject,
@@ -43,10 +44,15 @@ LEFT JOIN (
 		ON opt.property_id = p._fivetran_id
 		AND p.name = 'hs_time_to_first_response_sla_status'
 ) AS response
-	ON t.property_hs_time_to_close_sla_status = response.response_sla_id
+	ON t.property_hs_time_to_first_response_sla_status = response.response_sla_id
 LEFT JOIN hubs.owner AS o
 	ON t.property_hubspot_owner_id = o.owner_id
+LEFT JOIN plumbing.auth0_to_hubspot_company AS a_to_hub
+	ON t.property_hs_primary_company_id = a_to_hub.company_id
+LEFT JOIN auth0.organization AS org
+	ON a_to_hub.auth0_id = org.id
+	AND org._fivetran_deleted IS FALSE
 WHERE
 	1 = 1
 	AND t._fivetran_deleted IS FALSE
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21
