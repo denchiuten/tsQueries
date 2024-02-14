@@ -10,9 +10,9 @@ SELECT
 	DATE_TRUNC('week', deal.property_hs_closed_won_date)::DATE AS closed_date,
 	DATE_TRUNC('week', deal.property_end_date)::DATE AS end_date, 
 	deal.property_closed_won_reason_checkbox AS closed_won_reason,
-	SUM(deal.property_arr_usd_) AS arr,
-	SUM(deal.property_hs_acv) AS acv,
-	SUM(deal.property_hs_tcv) AS tcv,
+	deal.property_arr_usd_ AS arr,
+	deal.property_hs_acv AS acv,
+	deal.property_hs_tcv AS tcv,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
@@ -45,4 +45,4 @@ LEFT JOIN hubs.property_option AS opt
 WHERE
 	1 = 1
 	AND deal.property_arr_usd_ + deal.property_hs_acv + deal.property_hs_tcv > 0
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
