@@ -12,8 +12,8 @@ WITH data AS (
 		DATE_TRUNC('week', deal.property_end_date)::DATE AS end_date, 
 		deal.property_closed_won_reason_checkbox AS closed_won_reason,
 		deal.property_arr_usd_ AS arr,
-		deal.property_hs_acv AS acv,
-		deal.property_hs_tcv AS tcv,
+		deal.property_annual_contract_value_usd_ AS acv,
+		deal.property_amount_in_home_currency AS tcv,
 		MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated
 	FROM hubs.deal AS deal
 	INNER JOIN hubs.deal_company AS dc
@@ -31,6 +31,7 @@ WITH data AS (
 	INNER JOIN (
 		SELECT DISTINCT d.week_ending_date AS obs_date
 		FROM plumbing.dates AS d
+		WHERE d.date <= CURRENT_DATE
 	) AS all_dates
 		ON all_dates.obs_date BETWEEN DATE_TRUNC('week', deal.property_hs_closed_won_date) AND DATE_TRUNC('week', deal.property_end_date)
 	LEFT JOIN hubs.property_option AS opt
@@ -45,7 +46,7 @@ WITH data AS (
 		)
 	WHERE
 		1 = 1
-		AND deal.property_arr_usd_ + deal.property_hs_acv + deal.property_hs_tcv > 0
+		AND deal.property_arr_usd_ + deal.property_annual_contract_value_usd_ + deal.property_amount_in_home_currency > 0
 		AND deal._fivetran_deleted IS FALSE
 	GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 )
