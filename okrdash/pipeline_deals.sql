@@ -11,9 +11,9 @@ SELECT
 	owner.first_name AS owner_first_name,
 	owner.last_name AS owner_last_name,
 	owner.email AS owner_email,
-	COALESCE(deal.property_hs_tcv,0) AS tcv,
-	COALESCE(deal.property_hs_acv,0) AS acv,
-	COALESCE(deal.property_hs_arr,0) AS arr,
+	COALESCE(deal.property_amount_in_home_currency,0) AS tcv,
+	COALESCE(deal.property_annual_contract_value_usd_,0) AS acv,
+	COALESCE(deal.property_arr_usd_,0) AS arr,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated	
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
