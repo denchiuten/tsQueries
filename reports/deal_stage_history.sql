@@ -1,10 +1,13 @@
 
 SELECT
 	d.deal_id,
+	d.property_dealtype AS deal_type,
 	com.property_name AS company_name,
 	d.property_dealname AS deal_name,
 	dps.label AS final_stage,
 	hist.label AS int_stage,
+	hist.probability AS hubspot_probability,
+	d.property_createdate::DATE AS created_date,
 	d.property_closedate::DATE AS close_date
 FROM hubs.deal AS d
 INNER JOIN hubs.deal_pipeline_stage AS dps
@@ -20,11 +23,11 @@ INNER JOIN hubs.company AS com
 LEFT JOIN (
 	SELECT DISTINCT
 		ds.deal_id,
-		stage.label
+		stage.label,
+		stage.probability
 	FROM hubs.deal_stage AS ds
 	INNER JOIN hubs.deal_pipeline_stage AS stage
 		ON ds.value = stage.stage_id
--- 		AND stage.label NOT IN ('#09 WON', '#10 Closed lost')
 		AND stage._fivetran_deleted IS FALSE
 		AND stage.pipeline_id = 19800993 -- sales pipeline v2
 ) AS hist
@@ -32,4 +35,3 @@ LEFT JOIN (
 WHERE
 	1 = 1
 	AND d._fivetran_deleted IS FALSE
-	AND d.property_amount_in_home_currency > 0
