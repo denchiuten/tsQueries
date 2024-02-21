@@ -16,6 +16,7 @@ SELECT
 	i.id AS issue_id,
 	i.identifier AS issue_key,
 	i.title AS issue_title,
+	i.completed_at::DATE AS issue_completed_at,
 	COALESCE(i.estimate, 1) AS story_points_completed,
 	DENSE_RANK() OVER (PARTITION BY p.id ORDER BY pm.member_id) + DENSE_RANK() OVER (PARTITION BY p.id ORDER BY pm.member_id DESC) - 1 AS n_project_members
 FROM google_sheets.capex_roadmaps AS gs
@@ -34,7 +35,8 @@ LEFT JOIN (
 		iss.identifier,
 		iss.title,
 		iss.project_id,
-		iss.estimate
+		iss.estimate,
+		iss.completed_at
 	FROM linear.issue AS iss
 	INNER JOIN linear.workflow_state AS ws
 		ON iss.state_id = ws.id
@@ -58,4 +60,4 @@ INNER JOIN google_sheets.capex_mapping AS cpm
 	AND cpm.development_share > 0
 WHERE
 	1 = 1
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19
