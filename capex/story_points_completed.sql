@@ -32,7 +32,7 @@ INNER JOIN linear.team AS t
 	ON i.team_id = t.id
 INNER JOIN linear.users AS u
 	ON i.assignee_id = u.id
-INNER JOIN linear.users AS lead
+LEFT JOIN linear.users AS lead
 	ON p.lead_id = lead.id
 INNER JOIN bob.employee AS b
 	ON LOWER(u.email) = LOWER(b.email)
