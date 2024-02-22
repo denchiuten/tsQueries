@@ -18,7 +18,6 @@ INNER JOIN hubs.deal_pipeline_stage AS stage
 INNER JOIN hubs.deal AS d
 	ON ds.deal_id = d.deal_id
 	AND d._fivetran_deleted IS FALSE
-	AND (d.property_amount_in_home_currency > 0 OR d.property_amount_in_home_currency IS NULL)
 INNER JOIN hubs.deal_pipeline_stage AS dps
 	ON d.deal_pipeline_stage_id = dps.stage_id
 	AND dps.pipeline_id = 19800993 -- sales pipeline v2
