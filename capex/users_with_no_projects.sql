@@ -1,5 +1,6 @@
 SELECT DISTINCT 
-	u.email
+	u.email,
+	e.work_title
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	ON map.role = e.work_title
@@ -25,4 +26,7 @@ LEFT JOIN (
 		AND rp._fivetran_deleted IS FALSE
 ) AS cpm
 	ON u.id = cpm.member_id
-WHERE cpm.member_id IS NULL
+WHERE 
+	1 = 1
+	AND cpm.member_id IS NULL
+	AND map.development_share > 0
