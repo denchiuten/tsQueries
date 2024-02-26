@@ -2,6 +2,7 @@
 
 SELECT
 	p._fivetran_synced AS data_up_to,
+	rp.roadmap_id,
 	r.name AS roadmap_name,
 	p.id AS project_id,
 	p.name AS project_name,
