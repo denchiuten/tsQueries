@@ -2,31 +2,24 @@
 
 SELECT
 	p._fivetran_synced AS data_up_to,
-	rp.roadmap_id,
-	r.name AS roadmap_name,
 	p.id AS project_id,
 	p.name AS project_name,
+	lead.name AS project_lead,
+	p.url AS project_url,
 	p.started_at::DATE AS project_start_date,
 	p.target_date::DATE AS project_target_date,
 	p.completed_at::DATE AS project_completed_date,
 	p.state AS project_status,
 	i.completed_at AS issue_completed_at_month,
-	i.estimate AS story_points_completed
+	i.estimate AS story_points_completed,
+	
+	-- redshift equivalent of PUBLIC.GROUP_CONCAT()
+	LISTAGG(u.name, ', ') WITHIN GROUP (ORDER BY u.name) AS members
 
--- start from table of roadmaps for capitalisable projects from https://docs.google.com/spreadsheets/d/1gn5WFe1PfniN2UbDv9LytvbxX9n60XlbVEs31Og37v8/edit#gid=0
-FROM google_sheets.capex_roadmaps AS gs
+FROM linear.roadmap_to_project AS rp
 
--- join to mapping table that connects roadmaps to projects
-INNER JOIN linear.roadmap_to_project AS rp
-	ON gs.linear_roadmap_id = rp.roadmap_id
-	AND rp._fivetran_deleted IS FALSE
 
--- join to roadmaps table to pull specific details for each roadmap
-INNER JOIN linear.roadmap AS r
-	ON gs.linear_roadmap_id = r.id
-	AND r._fivetran_deleted IS FALSE
-
--- do the same thing with the project table
+-- join to projects table to pull details for each project
 INNER JOIN linear.project AS p
 	ON rp.project_id = p.id
 	AND p._fivetran_deleted IS FALSE
@@ -51,4 +44,18 @@ LEFT JOIN (
 	GROUP BY 1,2
 ) AS i
 	ON p.id = i.project_id
-
+LEFT JOIN linear.project_member AS pm
+	ON p.id = pm.project_id
+	AND pm._fivetran_deleted IS FALSE
+LEFT JOIN linear.users AS u
+	ON pm.member_id = u.id
+	AND u._fivetran_deleted IS FALSE
+LEFT JOIN linear.users AS lead
+	ON p.lead_id = lead.id
+	AND lead._fivetran_deleted IS FALSE
+WHERE
+	1 = 1
+	-- roadmap ID for 2024 Features Roadmap
+	AND rp.roadmap_id = 'bcaa52ba-7dc0-4004-9a1f-c493dac497b3'
+	AND rp._fivetran_deleted IS FALSE
+GROUP BY 1,2,3,4,5,6,7,8,9,10,11
