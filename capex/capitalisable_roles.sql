@@ -6,7 +6,8 @@ SELECT DISTINCT
 	e.full_name,
 	cpm.completed_at,
 	p.id AS project_id,
-	p.name AS project_name
+	p.name AS project_name,
+	map.development_share
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add RTRIM and LOWER to correct for trailing white space and improper capitalisation
@@ -49,6 +50,7 @@ WHERE
 
 UNION ALL
 
+-- add dummy rows for every combination of person and month
 SELECT DISTINCT 
 	u.email,
 	e.work_department AS department,
@@ -57,7 +59,8 @@ SELECT DISTINCT
 	e.full_name,
 	DATE_TRUNC('month', d.date)::DATE AS completed_at,
 	NULL AS project_id,
-	NULL AS project_name
+	NULL AS project_name,
+	map.development_share
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add RTRIM and LOWER to correct for trailing white space and improper capitalisation
@@ -72,5 +75,7 @@ LEFT JOIN linear.project_member AS mem
 	ON u.id = mem.member_id
 	AND mem._fivetran_deleted IS FALSE
 LEFT JOIN plumbing.dates AS d
+	
+	-- between the start of the year and current date
 	ON d.date BETWEEN DATE_TRUNC('year', CURRENT_DATE) AND CURRENT_DATE
 	
