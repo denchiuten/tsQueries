@@ -1,0 +1,1 @@
+DROP TABLE "notion"."user_bot" CASCADE;

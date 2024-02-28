@@ -1,0 +1,3 @@
+SELECT linear_cycle_id
+FROM plumbing.jira_sprint_to_linear_cycle
+WHERE jira_sprint_id = 1377

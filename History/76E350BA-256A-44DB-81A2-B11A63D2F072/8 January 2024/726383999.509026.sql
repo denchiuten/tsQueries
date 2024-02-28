@@ -1,0 +1,2 @@
+SELECT DISTINCT payroll_employment_type
+FROM bob.employee

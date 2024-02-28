@@ -1,0 +1,11 @@
+DROP TABLE "fullstory"."privacy_block_rule_history";
+DROP TABLE "fullstory"."privacy_domain_settings_history";
+DROP TABLE "fullstory"."privacy_element_block";
+DROP TABLE "fullstory"."privacy_element_group";
+DROP TABLE "fullstory"."privacy_geo_settings_history";
+DROP TABLE "fullstory"."privacy_recording_feature_history";
+DROP TABLE "fullstory"."privacy_setting_history";
+DROP TABLE "fullstory"."session";
+DROP TABLE "fullstory"."user_event";
+DROP TABLE "fullstory"."user_property";
+DROP TABLE "fullstory"."users";

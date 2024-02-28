@@ -1,0 +1,11 @@
+SELECT
+	i.assignee IS NULL AS no_assignee_boolean,
+	COUNT(*)
+FROM jra.issue AS i
+INNER JOIN jra.status AS s
+	ON i.status = s.id
+	AND s.name NOT IN ('Done', 'Cancelled', 'To Do', 'Backlog', 'Canceled', 'Graveyard')
+WHERE
+	1 = 1
+	AND i._fivetran_deleted IS FALSE
+GROUP BY 1

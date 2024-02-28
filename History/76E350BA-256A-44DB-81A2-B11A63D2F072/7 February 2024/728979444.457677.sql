@@ -1,0 +1,1 @@
+SELECT * FROM plumbing.auth0_to_hubspot_company

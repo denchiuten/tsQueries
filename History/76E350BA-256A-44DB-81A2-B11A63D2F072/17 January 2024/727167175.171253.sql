@@ -1,0 +1,46 @@
+SELECT
+  i.key,
+  i.summary,
+  i.description,
+  users.name AS assignee,
+  priority.name AS priority,
+  latest.value AS severity,
+  type.name AS issue_type,
+  'https://gpventure.atlassian.net/browse/' || i.key AS url,
+  i.created AS date_created,
+  u.first_update,
+  i.resolved AS date_resolved,
+  rca.value AS rca,
+  sd.value AS solution_doc
+FROM jra.issue AS i
+INNER JOIN jra.project AS p
+  ON i.project = p.id
+  AND p.key = 'PTINC'
+INNER JOIN jra.issue_type AS type
+  ON i.issue_type = type.id
+INNER JOIN jra.user AS users
+  ON i.assignee = users.id
+INNER JOIN jra.priority AS priority
+  ON i.priority = priority.id
+LEFT JOIN jra.vw_latest_issue_field_value AS latest
+  ON i.id = latest.issue_id
+  AND latest.field_id ='customfield_11118' -- field_id for Severity custom field
+LEFT JOIN jra.vw_latest_issue_field_value AS rca
+  ON i.id = rca.issue_id
+  AND rca.field_id ='customfield_11191' -- field_id for RCA custom field
+LEFT JOIN jra.vw_latest_issue_field_value AS sd
+  ON i.id = sd.issue_id
+  AND sd.field_id ='customfield_11194' -- field_id for RCA custom field
+  
+LEFT JOIN (
+  SELECT 
+    h.issue_id,
+    MIN(h.value) AS first_update
+  FROM jra.issue_field_history AS h
+  WHERE h.field_id = 'updated'
+  GROUP BY 1
+) AS u
+  ON i.id = u.issue_id
+WHERE
+	1 = 1
+	AND i._fivetran_deleted IS FALSE

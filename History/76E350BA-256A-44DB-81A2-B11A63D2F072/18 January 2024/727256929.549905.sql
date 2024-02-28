@@ -1,0 +1,1 @@
+SELECT * FROM plumbing.notion_project_to_linear_project WHERE linear_project_id = '01548d09-9c53-40b7-a263-f2214af76772'

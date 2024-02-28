@@ -1,0 +1,3 @@
+SELECT *
+FROM jra.issue
+WHERE key = 'CUSIMP-4139'

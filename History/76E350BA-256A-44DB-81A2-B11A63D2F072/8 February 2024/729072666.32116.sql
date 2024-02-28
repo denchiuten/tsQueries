@@ -1,0 +1,1 @@
+ALTER TABLE finance.actuals DROP COLUMN finance_cost_centre;

@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS plumbing.auth0_to_hubspot_company;
+ALTER TABLE plumbing.auth0_to_hubspot_company_new RENAME TO auth0_to_hubspot_company;

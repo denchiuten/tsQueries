@@ -1,0 +1,3 @@
+SELECT *
+FROM hubs.ticket
+WHERE id = 2187343000
