@@ -77,21 +77,6 @@ CREATE VIEW plumbing.vw_tool_users AS (
 	UNION ALL
 	
 	SELECT
-		'Jira' AS tool,
-		LOWER(jira_u.email) AS email,
-		jira_u.id AS user_id,
-		COALESCE(emp.internal_status, 'Unknown') AS bob_status
-	FROM jra.user AS jira_u
-	LEFT JOIN bob.employee AS emp
-		ON LOWER(jira_u.email) = LOWER(emp.email)
-	WHERE
-		1 = 1
-		AND jira_u.is_active IS TRUE
-		AND jira_u.email IS NOT NULL
-	
-	UNION ALL
-	
-	SELECT
 		'auth0' AS tool,
 		LOWER(auth0_u.email) AS email,
 		auth0_u.id AS user_id,
@@ -134,4 +119,18 @@ CREATE VIEW plumbing.vw_tool_users AS (
 		1 = 1
 		AND t._fivetran_deleted IS FALSE
 		AND t.email IS NOT NULL
+	
+	UNION ALL
+		
+	SELECT
+		'Testmo' AS tool,
+		LOWER(testmo.email) AS email,
+		testmo.id::VARCHAR(256) AS user_id,
+		COALESCE(emp.internal_status, 'Unknown') AS bob_status
+	FROM google_sheets.testmo_users AS testmo
+	LEFT JOIN bob.employee AS emp
+		ON LOWER(testmo.email) = LOWER(emp.email)
+	WHERE
+		1 = 1
+		AND testmo.is_active IS TRUE
 );

@@ -1,10 +1,10 @@
 SELECT	
 	'notion' AS tool,
-	not_u.email,
+	LOWER(not_u.email) AS email,
 	COALESCE(emp.internal_status, 'Unknown') AS bob_status
 FROM notion.users AS not_u
 LEFT JOIN bob.employee AS emp
-	ON not_u.email = emp.email
+	ON LOWER(not_u.email) = LOWER(emp.email)
 WHERE
 	1 = 1
 	AND not_u._fivetran_deleted IS FALSE
@@ -14,11 +14,11 @@ UNION ALL
 
 SELECT
 	'slack' AS tool,
-	slack_u.profile_email AS email,
+	LOWER(slack_u.profile_email) AS email,
 	COALESCE(emp.internal_status, 'Unknown') AS bob_status
 FROM slack.users AS slack_u
 LEFT JOIN bob.employee AS emp
-	ON slack_u.profile_email = emp.email
+	ON LOWER(slack_u.profile_email) = LOWER(emp.email)
 WHERE
 	1 = 1
 	AND slack_u._fivetran_deleted IS FALSE
@@ -29,12 +29,14 @@ UNION ALL
 
 SELECT
 	'linear' AS tool,
-	lin_u.email AS email,
+	LOWER(lin_u.email) AS email,
 	COALESCE(emp.internal_status, 'Unknown') AS bob_status
 FROM linear.users AS lin_u
 LEFT JOIN bob.employee AS emp
-	ON lin_u.email = emp.email
+	ON LOWER(lin_u.email) = LOWER(emp.email)
 WHERE
 	1 = 1
 	AND lin_u._fivetran_deleted IS FALSE
 	AND lin_u.active IS TRUE
+	
+ORDER BY 1,3,2

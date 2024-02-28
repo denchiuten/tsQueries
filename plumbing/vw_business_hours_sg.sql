@@ -1,9 +1,10 @@
-DROP VIEW IF EXISTS plumbing.business_hours_sg;
-CREATE VIEW plumbing.business_hours_sg AS (
+DROP VIEW IF EXISTS plumbing.vw_business_hours_sg;
+CREATE VIEW plumbing.vw_business_hours_sg AS (
 	SELECT 
-		d.date,
-	    nt.hour_number AS hour,
-	    TO_CHAR(d.date + (nt.hour_number || ' hours')::INTERVAL, 'YYYY-MM-DD HH24:00:00') AS timestamp
+		d.date AS date_singapore,
+	    nt.hour_number AS hour_singapore,
+	    (d.date + (nt.hour_number) * INTERVAL '1 hour') AT TIME ZONE 'Asia/Singapore' AT TIME ZONE 'UTC' AS timestamp_iso_utc,
+	    (d.date + (nt.hour_number) * INTERVAL '1 hour') AS timestamp_iso_singapore
 	FROM plumbing.dates AS d
 	CROSS JOIN plumbing.hours_in_day AS nt
 	LEFT JOIN (

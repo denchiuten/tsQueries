@@ -10,8 +10,13 @@ SELECT DISTINCT
 	map.development_share
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
+<<<<<<< HEAD
 	-- add TRIM and LOWER to correct for trailing white space and improper capitalisation
 	ON TRIM(LOWER(map.role)) = TRIM(LOWER(e.work_title))
+=======
+	-- add RTRIM and LOWER to correct for trailing white space and improper capitalisation
+	ON RTRIM(LOWER(map.role)) = RTRIM(LOWER(e.work_title))
+>>>>>>> parent of d38f277 (i don't understand what's happening)
 	
 	-- also include department in the JOIN since some job titles may exist in multiple departments
 	AND map.department = e.work_department
@@ -24,7 +29,11 @@ LEFT JOIN linear.project_member AS mem
 LEFT JOIN linear.project AS p
 	ON mem.project_id = p.id
 	AND p._fivetran_deleted IS FALSE
+<<<<<<< HEAD
 INNER JOIN (
+=======
+LEFT JOIN (
+>>>>>>> parent of d38f277 (i don't understand what's happening)
 	SELECT DISTINCT
 		rp.project_id,
 		DATE_TRUNC('month', i.completed_at)::DATE AS completed_at
