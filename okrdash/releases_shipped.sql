@@ -1,4 +1,5 @@
 SELECT
+	il._fivetran_synced AS data_up_to,
 	i.id AS issue_id,
 	i.identifier AS issue_key,
 	release_label.label_id AS release_version_label_id,
