@@ -45,10 +45,14 @@ INNER JOIN linear.team AS t
 
 INNER JOIN linear.users AS u 
 	ON i.assignee_id = u.id
+<<<<<<< HEAD
 	AND u._fivetran_deleted IS FALSE	
 -- Joining issue table to users table , for current valid records only -- 
 
+INNER JOIN linear.users AS lead
+=======
 LEFT JOIN linear.users AS lead
+>>>>>>> 45b05617b993369a4fd703021a62e0bd23d4c7e3
 	ON p.lead_id = lead.id
 	AND lead._fivetran_deleted IS FALSE
 -- Joining project table to users table , to retrieve project's lead (user) --
