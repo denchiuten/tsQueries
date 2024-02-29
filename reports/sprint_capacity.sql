@@ -1,6 +1,6 @@
 SELECT 
 	t.name AS team,
-	COALESCE(c.name, 'Unassigned') AS cycle_name,
+	COALESCE(c.name, 'Unnamed') AS cycle_name,
 	c.id AS cycle_id,
 	c.starts_at :: DATE AS cycle_start,
 	c.ends_at :: DATE AS cycle_end,
