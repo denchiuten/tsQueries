@@ -33,7 +33,7 @@ WITH data AS (
 		FROM plumbing.dates AS d
 		WHERE d.date <= CURRENT_DATE
 	) AS all_dates
-		ON all_dates.obs_date BETWEEN DATE_TRUNC('week', deal.property_hs_closed_won_date) AND DATE_TRUNC('week', deal.property_end_date)
+		ON all_dates.obs_date BETWEEN DATE_TRUNC('week', deal.property_commencement_date) AND DATE_TRUNC('week', deal.property_end_date)
 	LEFT JOIN hubs.property_option AS opt
 		ON com.property_sector_grouped_ = opt.value
 		AND opt.property_id = 'LvhF5AouIjxudPghzI6sPeTQQis=' -- property_id for sector_grouped_
