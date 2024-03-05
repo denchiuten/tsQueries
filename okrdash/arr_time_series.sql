@@ -12,7 +12,7 @@ WITH data AS (
 		DATE_TRUNC('week', deal.property_end_date)::DATE AS end_date, 
 		deal.property_closed_won_reason_checkbox AS closed_won_reason,
 		deal.property_arr_usd_ AS arr,
-		deal.property_annual_contract_value_usd_ AS acv,
+		deal.property_acv_usd AS acv,
 		deal.property_amount_in_home_currency AS tcv,
 		MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated
 	FROM hubs.deal AS deal
@@ -46,7 +46,7 @@ WITH data AS (
 		)
 	WHERE
 		1 = 1
-		AND deal.property_arr_usd_ + deal.property_annual_contract_value_usd_ + deal.property_amount_in_home_currency > 0
+		AND deal.property_arr_usd_ + deal.property_acv_usd + deal.property_amount_in_home_currency > 0
 		AND deal._fivetran_deleted IS FALSE
 	GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 )
