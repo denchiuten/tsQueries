@@ -14,7 +14,6 @@ SELECT
 	-- then by 60 to convert to minutes, and by 60 again to convert to hours
 	AVG(property_time_to_first_agent_reply) / 1000 / 60 / 60 AS value_1,
 	COUNT(DISTINCT t.id) AS value_2
-
 FROM hubs.ticket AS t
 WHERE
 	1 = 1
@@ -22,3 +21,9 @@ WHERE
 	AND t.property_time_to_first_agent_reply IS NOT NULL
 GROUP BY 1,2
 );
+
+-- now drop the production table
+DROP TABLE IF EXISTS plumbing.okrdash_kpis;
+
+-- and rename the running table to the production name
+ALTER TABLE plumbing.okrdash_kpis_RUNNING RENAME TO okrdash_kpis;
