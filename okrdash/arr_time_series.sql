@@ -14,7 +14,7 @@ WITH data AS (
 		deal.property_arr_usd_ AS arr,
 		deal.property_acv_usd AS acv,
 		deal.property_amount_in_home_currency AS tcv,
-		MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated
+		deal._fivetran_synced::TIMESTAMP AS last_updated
 	FROM hubs.deal AS deal
 	INNER JOIN hubs.deal_company AS dc
 		ON deal.deal_id = dc.deal_id
@@ -48,7 +48,6 @@ WITH data AS (
 		1 = 1
 		AND deal.property_arr_usd_ + deal.property_acv_usd + deal.property_amount_in_home_currency > 0
 		AND deal._fivetran_deleted IS FALSE
-	GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 )
 
 SELECT 
