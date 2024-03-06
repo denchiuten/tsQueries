@@ -1,0 +1,1 @@
+SELECT * FROM hubs.owner AS o WHERE o.owner_id = 60257361

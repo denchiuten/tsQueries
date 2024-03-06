@@ -1,0 +1,1 @@
+DELETE FROM google_calendar."event" WHERE _fivetran_deleted IS TRUE;

@@ -1,0 +1,1 @@
+ALTER TABLE plumbing.jira_sprint_to_linear_label RENAME TO jira_sprint_to_linear_cycle

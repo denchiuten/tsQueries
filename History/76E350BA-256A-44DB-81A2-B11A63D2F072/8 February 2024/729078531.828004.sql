@@ -1,0 +1,1 @@
+SELECT * FORM finance.budget

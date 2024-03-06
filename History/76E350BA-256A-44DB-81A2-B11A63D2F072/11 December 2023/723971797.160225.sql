@@ -1,0 +1,3 @@
+SELECT *
+FROM gcal.event
+WHERE event.id IN ('10aj7g711k4v6jcomu32t6vqtb_20231213T013000Z', '10aj7g711k4v6jcomu32t6vqtb_R20231213T013000')

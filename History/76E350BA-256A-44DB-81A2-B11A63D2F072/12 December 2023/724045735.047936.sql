@@ -1,0 +1,1 @@
+ALTER TABLE hubs.contact_to_emails_temp RENAME TO contact_to_emails;

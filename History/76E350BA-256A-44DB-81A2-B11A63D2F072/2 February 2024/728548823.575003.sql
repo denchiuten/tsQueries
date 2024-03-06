@@ -1,0 +1,1 @@
+SELECT name, _fivetran_id, hubspot_object  FROM hubs.property ORDER BY 1

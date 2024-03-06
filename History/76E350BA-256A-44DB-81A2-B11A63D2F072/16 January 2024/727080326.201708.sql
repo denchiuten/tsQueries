@@ -1,0 +1,1 @@
+SELECT TO_CHAR('2024-01-16'::date, 'Day') AS day_of_week;

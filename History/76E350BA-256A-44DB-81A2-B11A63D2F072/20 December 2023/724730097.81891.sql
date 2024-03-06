@@ -1,0 +1,1 @@
+UPDATE "jra"."issue" SET "parent_id" = 23130 WHERE "id" = 33513;
