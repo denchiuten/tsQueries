@@ -56,6 +56,30 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	GROUP BY 1,2,3
 );
 
+------------ mean and median time to resolve Linear issues labeled as Bugs
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT
+		DATE_TRUNC('month', i.created_at)::DATE AS datemonth,
+		'mean_time_to_resolve' AS metric_1,
+		'median_time_to_resolve' AS metric_2,
+		AVG(DATEDIFF('day', i.created_at::DATE, i.completed_at::DATE)) AS value_1,
+		MEDIAN(DATEDIFF('day', i.created_at::DATE, i.completed_at::DATE)) AS value_2
+	FROM linear.issue AS i
+	INNER JOIN linear.workflow_state AS ws
+		ON i.state_id = ws.id
+		AND ws._fivetran_deleted IS FALSE
+		AND ws.name = 'Done'
+	INNER JOIN linear.issue_label AS il
+		ON i.id = il.issue_id
+		-- label id for 'Bug' (under 'Issue Type' label group)
+		AND il.label_id = '182bdac2-2793-457e-800d-0f4afc997c9b'
+		AND il._fivetran_deleted IS FALSE
+	WHERE
+		1 = 1
+		AND i._fivetran_deleted IS FALSE
+	GROUP BY 1,2
+);
+
 -- now drop the production table
 DROP TABLE IF EXISTS plumbing.okrdash_kpis;
 
