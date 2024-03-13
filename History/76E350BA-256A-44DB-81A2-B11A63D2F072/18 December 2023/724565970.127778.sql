@@ -1,0 +1,2 @@
+SELECT *
+FROM jra."user" WHERE id = '6406de167c30bbd6b3407830'

@@ -1,0 +1,1 @@
+ALTER TABLE finance.budget DROP COLUMN pnl;

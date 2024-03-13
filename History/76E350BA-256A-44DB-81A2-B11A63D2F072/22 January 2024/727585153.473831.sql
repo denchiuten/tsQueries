@@ -1,0 +1,2 @@
+SELECT DISTINCT property_sector_grouped_
+FROM hubs.company

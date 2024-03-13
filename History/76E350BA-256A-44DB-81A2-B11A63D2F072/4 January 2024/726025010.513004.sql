@@ -1,0 +1,1 @@
+DROP VIEW IF EXISTS plumbing.vw_tool_users;

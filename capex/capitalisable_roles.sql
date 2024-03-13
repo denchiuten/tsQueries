@@ -24,6 +24,7 @@ LEFT JOIN linear.project_member AS mem
 LEFT JOIN linear.project AS p
 	ON mem.project_id = p.id
 	AND p._fivetran_deleted IS FALSE
+
 INNER JOIN (
 	SELECT DISTINCT
 		rp.project_id,

@@ -1,0 +1,1 @@
+SELECT * from slack.users s WHERE s.profile_email LIKE 'kyara%'

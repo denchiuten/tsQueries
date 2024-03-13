@@ -1,0 +1,2 @@
+SELECT *
+FROM linear.project

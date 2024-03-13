@@ -1,0 +1,1 @@
+SELECT auth0_id, company_id FROM plumbing.auth0_to_hubspot_company
