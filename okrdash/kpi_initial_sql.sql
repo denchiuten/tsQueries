@@ -42,9 +42,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	FROM fullstory_o_1jfe7s_na1.events AS e
 	INNER JOIN fullstory_o_1jfe7s_na1.vw_fs_users AS fs
 		ON e.device_id = fs.device_id
-	INNER JOIN hubs.contact AS hc
-		ON LOWER(fs.user_email) = LOWER(hc.property_email)
-		AND hc._fivetran_deleted IS FALSE
+	INNER JOIN hubs.vw_contact_to_emails AS hc
+		ON LOWER(fs.user_email) = LOWER(hc.email)
 	INNER JOIN hubs.contact_company AS cc
 		ON hc.id = cc.contact_id
 		-- primary company association type
