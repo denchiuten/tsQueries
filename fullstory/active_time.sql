@@ -1,13 +1,13 @@
-CREATE OR REPLACE VIEW fullstory.fullstory_1enq.view_web_pageviews (
-	device_id,
-	session_id,
-	view_id,
-	page_definition_id,
-	page_definition_name,
-	duration_seconds,
-	start_time,
-	end_time
-) AS 
+-- CREATE OR REPLACE VIEW fullstory.fullstory_1enq.view_web_pageviews (
+-- 	device_id,
+-- 	session_id,
+-- 	view_id,
+-- 	page_definition_id,
+-- 	page_definition_name,
+-- 	duration_seconds,
+-- 	start_time,
+-- 	end_time
+-- ) AS 
 WITH web_navigates AS (
 	SELECT
 		e.device_id,
@@ -31,20 +31,20 @@ WITH web_navigates AS (
 	WHERE
 		e.event_type = 'navigate'
 		AND e.source_type = 'web'
+		AND JSON_EXTRACT_PATH_TEXT(e.source_properties::VARCHAR, 'page_definition_id') <> ''
 ),
 
 last_events AS (
 	SELECT
 		wn.event_id,
 		max(e.event_time) last_event_time
-	FROM web_navigates wn
-	JOIN events e 
+	FROM web_navigates AS wn
+	JOIN fullstory_o_1jfe7s_na1.events AS e 
 		ON e.device_id = wn.device_id
 		AND e.session_id = wn.session_id
 		AND e.view_id = wn.view_id
 		AND e.event_time >= wn.navigate_time
-		and(wn.next_navigate_time IS NULL
-		OR e.event_time < wn.next_navigate_time)
+		AND(wn.next_navigate_time IS NULL OR e.event_time < wn.next_navigate_time)
 	GROUP BY
 		wn.event_id
 )
@@ -54,7 +54,7 @@ SELECT
 	wn.view_id,
 	wn.page_definition_id,
 	wn.page_definition_name,
-	datediff(seconds, wn.navigate_time, le.last_event_time) AS duration_seconds,
+	EXTRACT(EPOCH FROM (le.last_event_time - wn.navigate_time)) AS duration_seconds,
 	wn.navigate_time AS start_time,
 	le.last_event_time AS end_time
 FROM web_navigates AS wn
