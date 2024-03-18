@@ -25,9 +25,9 @@ WITH web_navigates AS (
 			ORDER BY e.event_time ASC 
 			ROWS BETWEEN CURRENT ROW AND 1 FOLLOWING
 		) AS next_navigate_time
-	FROM events AS e
-	JOIN page_definitions AS pd 
-		ON e.source_properties :page_definition_id = pd.id
+	FROM fullstory_o_1jfe7s_na1.events AS e
+	JOIN fullstory_o_1jfe7s_na1.page_definitions AS pd 
+		ON JSON_EXTRACT_PATH_TEXT(e.source_properties::VARCHAR, 'page_definition_id') = pd.id
 	WHERE
 		e.event_type = 'navigate'
 		AND e.source_type = 'web'
