@@ -122,7 +122,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 
 INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	SELECT 
-		DATE_TRUNC('month', c.property_hs_lifecyclestage_lead_date)::DATE AS datemonth,
+		DATE_TRUNC('month', c.property_createdate)::DATE AS datemonth,
 		COUNT(c.id) AS value_1
 	FROM hubs.contact AS c
 	WHERE EXTRACT(YEAR FROM c.property_createdate) = '2024'
@@ -133,6 +133,28 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	GROUP BY 1
 );
 
+------------ conversion rate of leads to SQL
+
+INSERT INTO plumbing.okrdash_kpis_RUNNING(
+	SELECT 
+		DATE_TRUNC('month', c.property_createdate)::DATE AS datemonth,
+		COUNT(DISTINCT c.id) AS value_1,
+		COUNT(DISTINCT CASE WHEN d.deal_id IS NOT NULL THEN c.id END) AS value_2,
+		ROUND((CAST(COUNT(DISTINCT CASE WHEN d.deal_id IS NOT NULL THEN c.id END) AS FLOAT) / COUNT(DISTINCT c.id) * 100), 1) AS value_3		
+	FROM hubs.contact AS c
+	LEFT JOIN hubs.deal_contact AS dc
+			ON c.id = dc.contact_id
+	LEFT JOIN hubs.deal AS d
+			ON dc.deal_id = d.deal_id
+			AND d._fivetran_deleted IS FALSE
+			AND d.property_dealname NOT ILIKE '%Belkins%'
+	WHERE EXTRACT(YEAR FROM c.property_createdate) = '2024'
+			AND c.property_hs_analytics_source IN ('DIRECT_TRAFFIC', 'ORGANIC_SEARCH', 'ORGANIC_SOCIAL', 'PAID_SEARCH', 'PAID_SOCIAL')
+			AND c.property_hs_email_domain NOT IN ('terrascope.com', 'terrascope-workspace.slack.com', 'puretech.com')
+			AND c._fivetran_deleted IS FALSE
+			OR c.property_hs_analytics_source_data_2 = '178192'
+	GROUP BY 1
+);
 
 -- now drop the production table
 DROP TABLE IF EXISTS plumbing.okrdash_kpis;
