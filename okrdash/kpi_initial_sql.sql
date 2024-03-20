@@ -30,7 +30,6 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	GROUP BY 1,2
 );
 
-
 ------------ unique monthly users and customers (i.e., companies) from FullStory
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT 
@@ -117,6 +116,23 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 		AND i.id IS NULL
 		AND d.date <= CURRENT_DATE
 	GROUP BY 1
+);
+
+------------ number of leads by channels 
+
+INSERT INTO plumbing.okrdash_kpis_RUNNING(
+	SELECT 
+		COALESCE(REPLACE(INITCAP(c.property_hs_analytics_source), '_', ' '), 'Total') AS lead_source,
+	-- DATE_TRUNC('month', c.property_hs_lifecyclestage_lead_date::date)::date AS month,
+		COUNT(*) AS number_of_leads	
+	FROM hubs.contact AS c
+	WHERE EXTRACT(YEAR FROM c.property_createdate) = '2024'
+		AND c.property_hs_analytics_source IN ('DIRECT_TRAFFIC', 'ORGANIC_SEARCH', 'ORGANIC_SOCIAL', 'PAID_SEARCH', 'PAID_SOCIAL')
+		AND c.property_hs_email_domain NOT IN ('terrascope.com', 'terrascope-workspace.slack.com', 'puretech.com')
+		AND c._fivetran_deleted IS FALSE -- (should we count deleted leads?)
+		OR c.property_hs_analytics_source_data_2 = '178192'
+	GROUP BY ROLLUP (1)
+	ORDER BY 1
 );
 
 
