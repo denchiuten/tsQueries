@@ -41,9 +41,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	FROM fullstory_o_1jfe7s_na1.events AS e
 	INNER JOIN fullstory_o_1jfe7s_na1.vw_fs_users AS fs
 		ON e.device_id = fs.device_id
-	INNER JOIN hubs.contact AS hc
-		ON LOWER(fs.user_email) = LOWER(hc.property_email)
-		AND hc._fivetran_deleted IS FALSE
+	INNER JOIN hubs.vw_contact_to_emails AS hc
+		ON LOWER(fs.user_email) = LOWER(hc.email)
 	INNER JOIN hubs.contact_company AS cc
 		ON hc.id = cc.contact_id
 		-- primary company association type
@@ -155,6 +154,38 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 			OR c.property_hs_analytics_source_data_2 = '178192'
 	GROUP BY 1
 );
+
+------------ monthly cloud spend per customer data plane
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT
+		f.date AS datemonth,
+		'n_data_planes' AS metric_1,
+		'external_cloud_spend' AS metric_2,
+		fs.n_data_planes AS value_1,
+		SUM(f.value) AS value_2
+	FROM finance.actuals AS f
+	INNER JOIN (
+		SELECT 
+			LAST_DAY(e.event_time::DATE) AS date,
+			COUNT(DISTINCT map.company_id) AS n_data_planes
+		FROM fullstory_o_1jfe7s_na1.events AS e
+		INNER JOIN plumbing.auth0_to_hubspot_company AS map
+			ON JSON_EXTRACT_PATH_TEXT(e.event_properties::VARCHAR, 'user_properties', 'organizationId_str') = map.auth0_id
+		WHERE
+			JSON_EXTRACT_PATH_TEXT(e.event_properties::VARCHAR, 'user_properties', 'organizationId_str') <> ''
+		GROUP BY 1
+	) AS fs
+		ON f.date = fs.date
+	WHERE
+		1 = 1
+		AND f.close_date = (SELECT MAX(close_date) FROM finance.actuals)
+		AND f.date <= f.close_date
+		AND f.lt_ppt_mapping = 'Cloud Cost - External'
+		-- exclude reversals
+		AND f.value > 0 
+	GROUP BY 1,2,3,4
+);
+
 
 -- now drop the production table
 DROP TABLE IF EXISTS plumbing.okrdash_kpis;
