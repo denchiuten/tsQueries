@@ -118,7 +118,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	GROUP BY 1
 );
 
------------- number of leads by channels 
+------------ number of leads by month 
 
 INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	SELECT 
