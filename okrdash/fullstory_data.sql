@@ -8,16 +8,16 @@ SELECT DISTINCT
 FROM fullstory_o_1jfe7s_na1.events AS e
 INNER JOIN fullstory_o_1jfe7s_na1.vw_fs_users AS fs
 	ON e.device_id = fs.device_id
-LEFT JOIN hubs.contact AS hc
+INNER JOIN hubs.contact AS hc
 	ON LOWER(fs.user_email) = LOWER(hc.property_email)
 	AND hc._fivetran_deleted IS FALSE
-LEFT JOIN hubs.contact_company AS cc
+INNER JOIN hubs.contact_company AS cc
 	ON hc.id = cc.contact_id
 	-- primary company association type
 	AND cc.type_id = 1
-LEFT JOIN hubs.vw_child_to_parent AS cp
+INNER JOIN hubs.vw_child_to_parent AS cp
 	ON cc.company_id = cp.child_id
-LEFT JOIN hubs.company AS com
+INNER JOIN hubs.company AS com
 	ON cp.parent_id = com.id
 	AND com._fivetran_deleted IS FALSE
 LEFT JOIN plumbing.auth0_to_hubspot_company AS map

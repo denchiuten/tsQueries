@@ -3,7 +3,8 @@ SELECT
 	a.lead_month,
 	SUM(a.acv) AS acv,
 	SUM(a.acv_leading) AS acv_leading,
-	SUM(a.acv_leading) / SUM(a.acv) AS net_revenue_retention
+	SUM(a.acv_leading) / SUM(a.acv) AS net_revenue_retention,
+	COUNT(DISTINCT CASE WHEN a.acv > 0 THEN a.company_id END) AS base_actives
 FROM (
 	SELECT
 		all_dates.obs_date AS base_month,
