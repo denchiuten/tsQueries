@@ -122,17 +122,15 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 
 INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	SELECT 
-		COALESCE(REPLACE(INITCAP(c.property_hs_analytics_source), '_', ' '), 'Total') AS lead_source,
-	-- DATE_TRUNC('month', c.property_hs_lifecyclestage_lead_date::date)::date AS month,
-		COUNT(*) AS number_of_leads	
+		DATE_TRUNC('month', c.property_hs_lifecyclestage_lead_date)::DATE AS datemonth,
+		COUNT(c.id) AS value_1
 	FROM hubs.contact AS c
 	WHERE EXTRACT(YEAR FROM c.property_createdate) = '2024'
 		AND c.property_hs_analytics_source IN ('DIRECT_TRAFFIC', 'ORGANIC_SEARCH', 'ORGANIC_SOCIAL', 'PAID_SEARCH', 'PAID_SOCIAL')
 		AND c.property_hs_email_domain NOT IN ('terrascope.com', 'terrascope-workspace.slack.com', 'puretech.com')
-		AND c._fivetran_deleted IS FALSE -- (should we count deleted leads?)
+		AND c._fivetran_deleted IS FALSE 
 		OR c.property_hs_analytics_source_data_2 = '178192'
-	GROUP BY ROLLUP (1)
-	ORDER BY 1
+	GROUP BY 1
 );
 
 
