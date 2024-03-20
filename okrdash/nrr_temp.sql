@@ -10,8 +10,8 @@ FROM (
 		ADD_MONTHS(all_dates.obs_date, 12)::DATE AS lead_month,
 		com.id AS company_id,
 		com.property_name AS company_name,
-		SUM(deal.property_acv_usd) AS acv,
-		LEAD(SUM(deal.property_acv_usd), 12) OVER(
+		SUM(CASE WHEN all_dates.obs_date BETWEEN deal.property_commencement_date AND deal.property_end_date THEN deal.property_acv_usd ELSE 0 END) AS acv,
+		LEAD(SUM(CASE WHEN all_dates.obs_date BETWEEN deal.property_commencement_date AND deal.property_end_date THEN deal.property_acv_usd ELSE 0 END), 12) OVER(
 			PARTITION BY com.id
 			ORDER BY  all_dates.obs_date
 		) AS acv_leading
@@ -24,14 +24,13 @@ FROM (
 	INNER JOIN hubs.deal_pipeline_stage AS stage
 		ON deal.deal_pipeline_stage_id = stage.stage_id
 		AND stage.label = '#09 WON'
-	INNER JOIN (
+	CROSS JOIN (
 		SELECT DISTINCT
 			DATE_TRUNC('month', d.date)::DATE AS obs_date
 		FROM plumbing.dates AS d
 		WHERE d.date <= CURRENT_DATE + 365
 		
 	) AS all_dates
-		ON all_dates.obs_date BETWEEN deal.property_commencement_date AND deal.property_end_date
 	WHERE
 		1 = 1
 		AND deal.property_arr_usd_ + deal.property_acv_usd + deal.property_amount_in_home_currency > 0
@@ -39,6 +38,7 @@ FROM (
 	GROUP BY 1,2,3,4
 ) AS a
 WHERE
-	a.lead_month <= CURRENT_DATE
+	1 = 1 
+	AND a.lead_month <= CURRENT_DATE
+	AND a.acv > 0
 GROUP BY 1,2
-ORDER BY 1,2
