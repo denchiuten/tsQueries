@@ -4,7 +4,7 @@ SELECT
 	c.id AS cycle_id,
 	c.starts_at :: DATE AS cycle_start,
 	c.ends_at :: DATE AS cycle_end,
-	COALESCE(u.name, 'Unassigned') AS assignee,
+	COALESCE(INITCAP(e.display_name), 'Unassigned') AS assignee,
 	s.name AS issue_status,
 	i.identifier AS issue_key,
 	t.key AS team_key,
@@ -24,7 +24,7 @@ INNER JOIN linear.cycle AS c
 -- join to retrieve teams under active cycle --
 INNER JOIN linear.team AS t
 	ON c.team_id = t.id
-	AND t._fivetran_deleted IS FALSE 
+	AND t._fivetran_deleted IS FALSE
 
 -- join to filter duplicated issues --
 INNER JOIN linear.workflow_state AS s
