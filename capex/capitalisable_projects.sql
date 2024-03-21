@@ -7,7 +7,9 @@ SELECT DISTINCT
 	cpm.completed_at,
 	p.id AS project_id,
 	p.name AS project_name,
-	map.development_share
+	map.development_share,
+	DATE_TRUNC('month', p.started_at)::DATE AS project_start_date,
+	LAST_DAY(p.target_date) AS project_target_date
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add TRIM and LOWER to correct for trailing white space and improper capitalisation
@@ -61,7 +63,9 @@ SELECT DISTINCT
 	DATE_TRUNC('month', d.date)::DATE AS completed_at,
 	NULL AS project_id,
 	NULL AS project_name,
-	map.development_share
+	map.development_share,
+	DATE_TRUNC('month', p.started_at)::DATE AS project_start_date,
+	LAST_DAY(p.target_date) AS project_target_date
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add TRIM and LOWER to correct for trailing white space and improper capitalisation
@@ -75,6 +79,9 @@ INNER JOIN linear.users AS u
 LEFT JOIN linear.project_member AS mem
 	ON u.id = mem.member_id
 	AND mem._fivetran_deleted IS FALSE
+LEFT JOIN linear.project AS p
+	ON mem.project_id = p.id
+	AND p._fivetran_deleted IS FALSE
 LEFT JOIN plumbing.dates AS d
 	
 	-- between the start of the year and current date
