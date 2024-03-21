@@ -124,8 +124,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 		DATE_TRUNC('month', c.property_createdate)::DATE AS datemonth,
 		'leads' AS metric_1,
 		'sql_leads' AS metric_2,
-		CAST(COUNT(DISTINCT c.id) AS FLOAT) AS value_1,
-		CAST(COUNT(DISTINCT CASE WHEN d.deal_id IS NOT NULL THEN c.id END) AS FLOAT) AS value_2,
+		COUNT(DISTINCT c.id) AS value_1,
+		COUNT(DISTINCT CASE WHEN d.deal_id IS NOT NULL THEN c.id END) AS value_2,
 	FROM hubs.contact AS c
 	LEFT JOIN hubs.deal_contact AS dc
 			ON c.id = dc.contact_id
