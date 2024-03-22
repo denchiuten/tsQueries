@@ -4,12 +4,14 @@ SELECT DISTINCT
 	map.team,
 	e.work_title AS title,
 	e.full_name,
+	e.work_employee_id_in_company AS employee_id,
 	cpm.completed_at,
 	p.id AS project_id,
 	p.name AS project_name,
 	map.development_share,
 	DATE_TRUNC('month', p.started_at)::DATE AS project_start_date,
-	LAST_DAY(p.target_date) AS project_target_date
+	LAST_DAY(p.target_date) AS project_target_date,
+	LAST_DAY(p.completed_at::DATE) AS project_completed_date
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add TRIM and LOWER to correct for trailing white space and improper capitalisation
@@ -26,7 +28,6 @@ LEFT JOIN linear.project_member AS mem
 LEFT JOIN linear.project AS p
 	ON mem.project_id = p.id
 	AND p._fivetran_deleted IS FALSE
-
 INNER JOIN (
 	SELECT DISTINCT
 		rp.project_id,
@@ -60,12 +61,14 @@ SELECT DISTINCT
 	map.team,
 	e.work_title AS title,
 	e.full_name,
+	e.work_employee_id_in_company AS employee_id,
 	DATE_TRUNC('month', d.date)::DATE AS completed_at,
 	NULL AS project_id,
 	NULL AS project_name,
 	map.development_share,
 	DATE_TRUNC('month', p.started_at)::DATE AS project_start_date,
-	LAST_DAY(p.target_date) AS project_target_date
+	LAST_DAY(p.target_date) AS project_target_date,
+	LAST_DAY(p.completed_at::DATE) AS project_completed_date
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add TRIM and LOWER to correct for trailing white space and improper capitalisation
