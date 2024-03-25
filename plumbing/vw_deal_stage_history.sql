@@ -13,6 +13,7 @@ SELECT
 FROM hubs.deal_stage AS ds
 INNER JOIN hubs.deal_pipeline_stage AS dps
 	ON ds.value = dps.stage_id
+	AND dps.pipeline_id = 19800993 -- id for sales_pipeline_v2
 	AND dps._fivetran_deleted IS FALSE
 INNER JOIN hubs.deal AS d
 	ON ds.deal_id = d.deal_id
