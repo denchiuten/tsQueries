@@ -20,7 +20,7 @@ SELECT
 FROM finance.actuals AS f
 WHERE
 	1 = 1
-	AND f.close_date = (SELECT MAX(close_date) FROM finance.actuals)
+	AND f.import_date = (SELECT MAX(import_date) FROM finance.actuals)
 	-- date is between the start and end of the close_date year
 	AND f.date BETWEEN DATE_TRUNC('year', f.close_date) AND DATE_ADD('day', -1, DATE_ADD('year', 1, DATE_TRUNC('year', f.close_date)))
 	
