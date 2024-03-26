@@ -15,7 +15,6 @@ INNER JOIN bob.employee AS e
 	
 	-- also include department in the JOIN since some job titles may exist in multiple departments
 	AND map.department = e.work_department
-	AND e.internal_status = 'Active'
 INNER JOIN linear.users AS u
 	ON LOWER(e.email) = LOWER(u.email)
 LEFT JOIN linear.project_member AS mem
