@@ -125,7 +125,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 		'leads' AS metric_1,
 		'sql_leads' AS metric_2,
 		COUNT(DISTINCT c.id) AS value_1,
-		COUNT(DISTINCT CASE WHEN d.deal_id IS NOT NULL THEN c.id END) AS value_2,
+		COUNT(DISTINCT CASE WHEN d.deal_id IS NOT NULL THEN c.id END) AS value_2
 	FROM hubs.contact AS c
 	LEFT JOIN hubs.deal_contact AS dc
 			ON c.id = dc.contact_id
@@ -133,8 +133,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 			ON dc.deal_id = d.deal_id
 			AND d._fivetran_deleted IS FALSE
 			AND d.property_dealname NOT ILIKE '%Belkins%'
-	WHERE EXTRACT(YEAR FROM c.property_createdate) = '2024'
-			AND c.property_hs_analytics_source IN ('DIRECT_TRAFFIC', 'ORGANIC_SEARCH', 'ORGANIC_SOCIAL', 'PAID_SEARCH', 'PAID_SOCIAL')
+	WHERE c.property_hs_analytics_source IN ('DIRECT_TRAFFIC', 'ORGANIC_SEARCH', 'ORGANIC_SOCIAL', 'PAID_SEARCH', 'PAID_SOCIAL')
 			AND c.property_hs_email_domain NOT IN ('terrascope.com', 'terrascope-workspace.slack.com', 'puretech.com')
 			AND c._fivetran_deleted IS FALSE
 			OR c.property_hs_analytics_source_data_2 = '178192'
