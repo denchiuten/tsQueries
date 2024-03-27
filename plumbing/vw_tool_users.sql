@@ -1,17 +1,15 @@
-DROP VIEW IF EXISTS plumbing.vw_tool_users;
-CREATE VIEW plumbing.vw_tool_users AS (
+CREATE OR REPLACE VIEW plumbing.vw_tool_users AS (
 	SELECT	
 		'Notion' AS tool,
 		LOWER(not_u.email) AS email,
 		not_u.id AS user_id,
 		COALESCE(emp.internal_status, 'Unknown') AS bob_status
-	FROM notion.users AS not_u
+	FROM google_sheets.notion_users AS not_u
 	LEFT JOIN bob.employee AS emp
 		ON LOWER(not_u.email) = LOWER(emp.email)
 	WHERE
 		1 = 1
-		AND not_u._fivetran_deleted IS FALSE
-		AND not_u.email IS NOT NULL
+		AND not_u.type = 'person'
 	
 	UNION ALL
 	
