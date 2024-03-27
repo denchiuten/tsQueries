@@ -4,6 +4,7 @@
 DROP TABLE IF EXISTS plumbing.okrdash_kpis_RUNNING;
 CREATE TABLE plumbing.okrdash_kpis_RUNNING (
 	datemonth DATE,
+	category VARCHAR(256),
 	metric_1 VARCHAR(256),
 	metric_2 VARCHAR(256),
 	value_1 DOUBLE PRECISION,
@@ -15,6 +16,7 @@ CREATE TABLE plumbing.okrdash_kpis_RUNNING (
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT
 		DATE_TRUNC('month', t.property_createdate)::DATE AS datemonth,
+		'cs_tickets' AS category,
 		'avg_time_to_first_response_in_hours' AS metric_1,
 		'no_tickets' AS metric_2,
 		
@@ -27,13 +29,14 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		1 = 1
 		AND t._fivetran_deleted IS FALSE
 		AND t.property_time_to_first_agent_reply IS NOT NULL
-	GROUP BY 1,2
+	GROUP BY 1,2,3,4
 );
 
 ------------ unique monthly users and customers (i.e., companies) from FullStory
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT 
 		DATE_TRUNC('month', e.event_time)::DATE AS datemonth,
+		'fs_usage' AS category,
 		'unique_monthly_users' AS metric_1,
 		'unique_monthly_customers' AS metric_2,
 		COUNT(DISTINCT fs.user_id) AS value_1,
@@ -51,13 +54,14 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		ON cc.company_id = cp.child_id
 		-- Exclude Terrascope employees
 		AND cp.parent_id <> 9244595755
-	GROUP BY 1,2,3
+	GROUP BY 1,2,3,4
 );
 
 ------------ mean and median time to resolve Linear issues labeled as Bugs
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT
 		DATE_TRUNC('month', i.created_at)::DATE AS datemonth,
+		'bug_resolution' AS category,
 		'mean_time_to_resolve' AS metric_1,
 		'median_time_to_resolve' AS metric_2,
 		AVG(DATEDIFF('day', i.created_at::DATE, i.completed_at::DATE)) AS value_1,
@@ -75,13 +79,14 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	WHERE
 		1 = 1
 		AND i._fivetran_deleted IS FALSE
-	GROUP BY 1,2
+	GROUP BY 1,2,3,4
 );
 
 ------------ revenue Y/Y growth and ebitda margins to calculate rule of 40
 INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	SELECT
 		f.date,
+		'rule_of_40' AS category,
 		'revenue_yoy' AS metric_1,
 		'ebitda_margin' AS metric_2,
 		SUM(CASE WHEN f.team = 'Revenue' THEN value ELSE 0 END) / LAG(SUM(CASE WHEN f.team = 'Revenue' THEN value ELSE 0 END), 12) OVER(ORDER BY f.date) - 1 AS value_1,
@@ -92,7 +97,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 		AND f.close_date = (SELECT MAX(close_date) FROM finance.actuals)
 		AND f.date <= f.close_date
 		AND f.pnl IS TRUE
-	GROUP BY 1
+	GROUP BY 1,2,3,4
 );
 
 ------------ number of PTINC-free days
@@ -100,6 +105,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	SELECT
 		DATE_TRUNC('month', d.date)::DATE AS datemonth,
+		'ptinc' AS category,
 		'ptinc-free days' AS metric_1,
 		NULL AS metric_2,
 		COUNT(DISTINCT d.date) AS value_1,
@@ -114,7 +120,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 		1 = 1
 		AND i.id IS NULL
 		AND d.date <= CURRENT_DATE
-	GROUP BY 1
+	GROUP BY 1,2,3,4
 );
 
 ------------ conversion rate of leads to SQL
@@ -122,6 +128,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 INSERT INTO plumbing.okrdash_kpis_RUNNING(
 	SELECT 
 		DATE_TRUNC('month', c.property_createdate)::DATE AS datemonth,
+		'lead_conversion' AS category,
 		'leads' AS metric_1,
 		'sql_leads' AS metric_2,
 		COUNT(DISTINCT c.id) AS value_1,
@@ -137,13 +144,14 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING(
 			AND c.property_hs_email_domain NOT IN ('terrascope.com', 'terrascope-workspace.slack.com', 'puretech.com')
 			AND c._fivetran_deleted IS FALSE
 			OR c.property_hs_analytics_source_data_2 = '178192'
-	GROUP BY 1
+	GROUP BY 1,2,3,4
 );
 
 ------------ monthly cloud spend per customer data plane
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT
 		f.date AS datemonth,
+		'cloud_costs' AS category,
 		'n_data_planes' AS metric_1,
 		'external_cloud_spend' AS metric_2,
 		fs.n_data_planes AS value_1,
@@ -168,7 +176,56 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		AND f.lt_ppt_mapping = 'Cloud Cost - External'
 		-- exclude reversals
 		AND f.value > 0 
+	GROUP BY 1,2,3,4,5
+);
+
+------------ metrics for net revenue retention
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT
+		a.lead_month AS datemonth,
+		'net_revenue_retention' AS category,
+		'lagged_revenue' AS metric_1,
+		'leading_revenue' AS metric_2,
+		SUM(a.acv) AS value_1 ,
+		SUM(a.acv_leading) AS value_2
+	FROM (
+		SELECT
+			all_dates.obs_date AS base_month,
+			ADD_MONTHS(all_dates.obs_date, 12)::DATE AS lead_month,
+			com.id AS company_id,
+			com.property_name AS company_name,
+			SUM(CASE WHEN all_dates.obs_date BETWEEN deal.property_commencement_date AND deal.property_end_date THEN deal.property_acv_usd ELSE 0 END) AS acv,
+			LEAD(SUM(CASE WHEN all_dates.obs_date BETWEEN deal.property_commencement_date AND deal.property_end_date THEN deal.property_acv_usd ELSE 0 END), 12) OVER(
+				PARTITION BY com.id
+				ORDER BY  all_dates.obs_date
+			) AS acv_leading
+		FROM hubs.deal AS deal
+		INNER JOIN hubs.deal_company AS dc
+			ON deal.deal_id = dc.deal_id
+			AND dc.type_id = 5 -- primary company only
+		INNER JOIN hubs.company AS com
+			ON dc.company_id = com.id
+		INNER JOIN hubs.deal_pipeline_stage AS stage
+			ON deal.deal_pipeline_stage_id = stage.stage_id
+			AND stage.label = '#09 WON'
+		CROSS JOIN (
+			SELECT DISTINCT LAST_DAY(d.date)::DATE AS obs_date
+			FROM plumbing.dates AS d
+			WHERE d.date <= ADD_MONTHS(CURRENT_DATE, 12)
+		) AS all_dates
+		WHERE
+			1 = 1
+			AND deal.property_arr_usd_ + deal.property_acv_usd + deal.property_amount_in_home_currency > 0
+			AND deal._fivetran_deleted IS FALSE
+		GROUP BY 1,2,3,4
+	) AS a
+	WHERE
+		1 = 1 
+		AND a.lead_month <= CURRENT_DATE
+		AND a.acv > 0
 	GROUP BY 1,2,3,4
+
+
 );
 
 

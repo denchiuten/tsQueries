@@ -37,6 +37,7 @@ LEFT JOIN bob.employee_out_of_office AS ooo
 	AND t.spent_date BETWEEN ooo.start_date AND ooo.end_date
 LEFT JOIN hubs.deal AS deal
 	ON p.code = deal.deal_id
+-- WHERE emp.first_name = 'Arata'
 GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13
 
 -- comment this section out for performance for now
