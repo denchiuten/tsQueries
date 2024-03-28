@@ -1,5 +1,4 @@
-DROP VIEW IF EXISTS plumbing.vw_user_id_lookup;
-CREATE VIEW plumbing.vw_user_id_lookup AS (
+CREATE OR REPLACE VIEW plumbing.vw_user_id_lookup AS (
 SELECT
 	LOWER(COALESCE(b.email, s.profile_email, n.email, l.email, hub.email, hub_o.email, har.email, t.email, test.email)) AS email,
 	b.id AS bob_user_id,
@@ -18,10 +17,9 @@ FULL OUTER JOIN slack.users AS s
 	AND s.is_bot IS FALSE
 	AND s.deleted IS FALSE
 	AND s.profile_email IS NOT NULL
-FULL OUTER JOIN notion.users AS n
+FULL OUTER JOIN google_sheets.notion_users AS n
 	ON LOWER(b.email) = LOWER(n.email)
-	AND n._fivetran_deleted IS FALSE
-	AND n.email IS NOT NULL	
+	AND n.type = 'person'
 FULL OUTER JOIN linear.users AS l
 	ON LOWER(b.email) = LOWER(l.email)
 	AND l._fivetran_deleted IS FALSE
