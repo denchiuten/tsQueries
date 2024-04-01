@@ -21,7 +21,7 @@ INNER JOIN hubs.deal AS d
 INNER JOIN hubs.deal_pipeline_stage AS dps
 	ON d.deal_pipeline_stage_id = dps.stage_id
 	AND dps.pipeline_id = 19800993 -- sales pipeline v2
-	AND dps.label IN ('#09 WON', '#10 Closed lost')
+	AND dps.label IN ('#09 WON', '#10 Closed lost', '#11 Backburner')
 	AND dps._fivetran_deleted IS FALSE
 INNER JOIN hubs.deal_company AS dc
 	ON d.deal_id = dc.deal_id
