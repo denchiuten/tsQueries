@@ -232,6 +232,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT
 		f.date AS datemonth,
+		'customer_acquisition' AS category,
 		'acquisition_cost' AS metric_1,
 		NULL AS metric_2,
 		SUM(f.value) AS value_1,
