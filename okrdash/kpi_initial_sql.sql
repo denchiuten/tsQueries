@@ -241,6 +241,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	WHERE f.import_date = (SELECT MAX(import_date) FROM finance.actuals)
 		AND f.date <= f.close_date
 		AND f.team IN ('Sales', 'Partnerships', 'Solution Engineering', 'Implementation', 'Marketing')
+		AND f.lt_ppt_mapping NOT ILIKE '%adjustment%'
 	GROUP BY 1
 );
 
