@@ -1,6 +1,7 @@
 CREATE OR REPLACE VIEW bob.vw_employee_team AS
 SELECT
 	h.employee_id,
+	e.email,
 	
 	-- function to extract the value of a custom column that we use in Hibob to record each employee's team
 	JSON_EXTRACT_PATH_TEXT(h.custom_columns, 'column_1681191721226') AS team_id,
