@@ -234,7 +234,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		f.date AS datemonth,
 		'customer_acquisition' AS category,
 		'acquisition_cost' AS metric_1,
-		NULL AS metric_2,
+		f.team AS metric_2,
 		SUM(f.value) AS value_1,
 		0 AS value_2
 	FROM finance.actuals AS f
@@ -242,7 +242,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		AND f.date <= f.close_date
 		AND f.team IN ('Sales', 'Partnerships', 'Solution Engineering', 'Implementation', 'Marketing')
 		AND f.lt_ppt_mapping NOT ILIKE '%adjustment%'
-	GROUP BY 1
+	GROUP BY 1,4
 );
 
 
