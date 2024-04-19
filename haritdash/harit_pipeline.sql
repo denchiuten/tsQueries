@@ -11,9 +11,9 @@ SELECT
 	deal.property_closedate::DATE AS close_date,
 	deal.property_commencement_date::DATE AS start_date,
 	deal.property_end_date::DATE AS end_date, 
-	COALESCE(deal.property_hs_tcv,0) AS tcv,
-	COALESCE(deal.property_hs_acv,0) AS acv,
-	COALESCE(deal.property_hs_arr,0) AS arr,
+	COALESCE(deal.property_amount_in_home_currency,0) AS tcv,
+	COALESCE(deal.property_acv_usd,0) AS acv,
+	COALESCE(deal.property_arr_usd_,0) AS arr,
 	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated	
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
