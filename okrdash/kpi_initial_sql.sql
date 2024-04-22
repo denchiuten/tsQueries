@@ -163,14 +163,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 			COUNT(DISTINCT map.company_id) AS n_data_planes
 		FROM fullstory_o_1jfe7s_na1.events AS e
 		INNER JOIN plumbing.auth0_to_hubspot_company AS map
-			ON e.event_properties.user_properties.organizationId_str = (
-				SELECT JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(e_inner.event_properties.user_properties), 'organizationId_str')
-				FROM fullstory_o_1jfe7s_na1.events AS e_inner
-				WHERE e_inner.event_time::DATE = e.event_time::DATE
-					AND e_inner.event_properties.user_properties IS NOT NULL
-			)
--- 		WHERE
--- 			JSON_EXTRACT_PATH_TEXT(e.event_properties::VARCHAR, 'user_properties', 'organizationId_str') <> ''
+			ON JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(e.event_properties.user_properties), 'organizationId_str') = map.auth0_id
+			AND e.event_properties.user_properties IS NOT NULL	
 		GROUP BY 1
 	) AS fs
 		ON f.date = fs.date
