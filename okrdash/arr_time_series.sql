@@ -11,7 +11,7 @@ WITH data AS (
 		DATE_TRUNC('week', deal.property_hs_closed_won_date)::DATE AS closed_date,
 		DATE_TRUNC('week', deal.property_end_date)::DATE AS end_date, 
 		deal.property_closed_won_reason_checkbox AS closed_won_reason,
-		deal.property_arr_usd_ AS arr,
+		deal.property_hs_arr AS arr,
 		deal.property_acv_usd AS acv,
 		deal.property_amount_in_home_currency AS tcv,
 		deal._fivetran_synced::TIMESTAMP AS last_updated
@@ -46,7 +46,7 @@ WITH data AS (
 		)
 	WHERE
 		1 = 1
-		AND deal.property_arr_usd_ + deal.property_acv_usd + deal.property_amount_in_home_currency > 0
+		AND deal.property_hs_arr + deal.property_acv_usd + deal.property_amount_in_home_currency > 0
 		AND deal._fivetran_deleted IS FALSE
 )
 
