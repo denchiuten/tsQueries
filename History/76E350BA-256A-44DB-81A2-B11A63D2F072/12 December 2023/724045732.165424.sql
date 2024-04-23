@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS hubs.contact_to_emails;

@@ -1,3 +1,0 @@
-SELECT DISTINCT
-calendar_list_id
-FROM calendar.event

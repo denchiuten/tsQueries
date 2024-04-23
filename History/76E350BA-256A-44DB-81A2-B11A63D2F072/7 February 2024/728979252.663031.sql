@@ -1,1 +1,0 @@
-ALTER TABLE auth0_to_hubspot_company DROP CONSTRAINT constraint_name;

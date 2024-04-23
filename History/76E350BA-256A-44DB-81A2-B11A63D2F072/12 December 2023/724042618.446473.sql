@@ -1,1 +1,0 @@
-ALTER TABLE plumbing.auth0_to_hubspot_company_1 RENAME TO auth0_to_hubspot_company;

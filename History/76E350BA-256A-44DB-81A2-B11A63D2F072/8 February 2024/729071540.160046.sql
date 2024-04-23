@@ -1,1 +1,0 @@
-ALTER TABLE finance.budget DROP COLUMN cash_commitment_binary;

@@ -1,1 +1,0 @@
-SELECT * FROM notion.database_object

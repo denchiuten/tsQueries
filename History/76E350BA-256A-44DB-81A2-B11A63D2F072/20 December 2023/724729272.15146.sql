@@ -1,3 +1,0 @@
-SELECT *
-FROM jra.issue
-WHERE key = 'MEASURE-3361'

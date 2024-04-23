@@ -1,4 +1,0 @@
-SELECT DISTINCT name
-FROM jra.field
-WHERE is_custom IS TRUE
-ORDER BY 1

@@ -1,1 +1,0 @@
-DROP TABLE "gc"."reminder_override" CASCADE;

@@ -1,1 +1,0 @@
-ALTER TABLE finance.actuals ADD COLUMN finance_cost_centre BIGINT;
