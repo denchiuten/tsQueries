@@ -42,9 +42,9 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		COUNT(DISTINCT fs.user_id) AS value_1,
 		COUNT(DISTINCT cp.parent_id) AS value_2
 	FROM fullstory_o_1jfe7s_na1.events AS e
-	INNER JOIN fullstory_o_1jfe7s_na1.vw_fs_users AS fs
+	INNER JOIN fullstory_o_1jfe7s_na1.users AS fs
 		ON e.device_id = fs.device_id
-	INNER JOIN hubs.vw_contact_to_emails AS hc
+	INNER JOIN hubs.contact_to_emails AS hc
 		ON LOWER(fs.user_email) = LOWER(hc.email)
 	INNER JOIN hubs.contact_company AS cc
 		ON hc.id = cc.contact_id
