@@ -35,7 +35,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 ------------ unique monthly users and customers (i.e., companies) from FullStory
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT 
-		DATE_TRUNC('month', e.event_time)::DATE AS datemonth,
+		LAST_DAY(e.event_time::DATE) AS datemonth,
 		'fs_usage' AS category,
 		'unique_monthly_users' AS metric_1,
 		'unique_monthly_customers' AS metric_2,
@@ -54,6 +54,22 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		ON cc.company_id = cp.child_id
 		-- Exclude Terrascope employees
 		AND cp.parent_id <> 9244595755
+	GROUP BY 1,2,3,4
+);
+
+------------ unique monthly users and customers (i.e., companies) from FullStory
+
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT 
+		LAST_DAY(e.event_time::DATE) AS datemonth,
+		'usage_minutes' AS category,
+		'total_active_minutes' AS metric_1,
+		'active_mins_per_data_plane' AS metric_2,
+		SUM(e.event_properties.active_duration_millis) / 1000 / 60 AS value_1,
+		SUM(e.event_properties.active_duration_millis) / 1000 / 60 / COUNT(DISTINCT fs.organization_id) AS value_2
+	FROM fullstory_o_1jfe7s_na1.events AS e
+	INNER JOIN fullstory_o_1jfe7s_na1.users AS fs
+		ON e.device_id = fs.device_id
 	GROUP BY 1,2,3,4
 );
 
