@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS jra.vw_latest_issue_field_value

@@ -1,1 +1,0 @@
-SELECT * FORM finance.budget

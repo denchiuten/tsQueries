@@ -1,1 +1,0 @@
-DELETE FROM google_calendar.calendar_list WHERE _fivetran_deleted IS TRUE

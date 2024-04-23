@@ -1,1 +1,0 @@
-SELECT * FROM hubs.property WHERE name = 'industry_sector'

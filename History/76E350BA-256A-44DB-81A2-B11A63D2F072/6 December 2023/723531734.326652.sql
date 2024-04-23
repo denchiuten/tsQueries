@@ -1,1 +1,0 @@
-SELECT DISTINCT is_merged FROM hubs.customer_feedback_submissions

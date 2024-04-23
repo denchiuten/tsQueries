@@ -1,1 +1,0 @@
-SELECT email FROM linear.users AS l WHERE l.name LIKE '%Tizon%'

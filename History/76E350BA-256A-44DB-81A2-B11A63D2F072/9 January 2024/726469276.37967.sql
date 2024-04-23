@@ -1,1 +1,0 @@
-DROP TABLE "gcal"."event_private_property" CASCADE;

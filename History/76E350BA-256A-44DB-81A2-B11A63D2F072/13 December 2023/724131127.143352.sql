@@ -1,2 +1,0 @@
-SELECT DISTINCT scope
-FROM auth0.client_grant_scope

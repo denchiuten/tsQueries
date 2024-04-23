@@ -1,1 +1,0 @@
-DROP VIEW plumbing.business_hours_sg
