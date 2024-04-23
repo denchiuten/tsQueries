@@ -12,7 +12,8 @@ SELECT
 	t.billable,
 	task.name AS task_name,
 	deal.property_product_tier AS tier,
-	SUM(rounded_hours) AS hours,
+	SUM(t.rounded_hours) AS hours,
+	SUM(t.hours) AS hours_unrounded,
 	MAX(MAX(u._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to 
 FROM harvest.vw_time_entry_latest AS t
 INNER JOIN harvest.task AS task

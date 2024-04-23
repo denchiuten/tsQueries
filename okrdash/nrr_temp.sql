@@ -27,9 +27,9 @@ FROM (
 		AND stage.label = '#09 WON'
 	CROSS JOIN (
 		SELECT DISTINCT
-			DATE_TRUNC('month', d.date)::DATE AS obs_date
+			LAST_DAY(d.date)::DATE AS obs_date
 		FROM plumbing.dates AS d
-		WHERE d.date <= CURRENT_DATE + 365
+		WHERE d.date <= ADD_MONTHS(CURRENT_DATE, 12)
 		
 	) AS all_dates
 	WHERE

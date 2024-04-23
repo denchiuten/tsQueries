@@ -1,8 +1,7 @@
 SELECT
-	f.date,
+	f.date AS datemonth,
 	fs.n_data_planes,
 	SUM(f.value) AS amount
--- 	AVG(fs.n_data_planes) AS n_data_planes
 FROM finance.actuals AS f
 INNER JOIN (
 	SELECT 
@@ -21,7 +20,7 @@ WHERE
 	AND f.close_date = (SELECT MAX(close_date) FROM finance.actuals)
 	AND f.date <= f.close_date
 	AND f.lt_ppt_mapping = 'Cloud Cost - External'
-	AND f.value > 0
+	AND f.value < 0
 GROUP BY 1,2
 ORDER BY 1
 
