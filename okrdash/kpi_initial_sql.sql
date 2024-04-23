@@ -65,8 +65,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		'usage_minutes' AS category,
 		'total_active_minutes' AS metric_1,
 		'active_mins_per_data_plane' AS metric_2,
-		SUM(e.event_properties.active_duration_millis) / 1000 / 60 AS value_1,
-		SUM(e.event_properties.active_duration_millis) / 1000 / 60 / COUNT(DISTINCT fs.organization_id) AS value_2
+		SUM(e.event_properties.active_duration_millis::INT) / 1000 / 60 AS value_1,
+		SUM(e.event_properties.active_duration_millis::INT) / 1000 / 60 / COUNT(DISTINCT fs.organization_id) AS value_2
 	FROM fullstory_o_1jfe7s_na1.events AS e
 	INNER JOIN fullstory_o_1jfe7s_na1.users AS fs
 		ON e.device_id = fs.device_id
