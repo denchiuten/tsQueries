@@ -1,1 +1,0 @@
-SELECT id FROM gcal.calendar_list

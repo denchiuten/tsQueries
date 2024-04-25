@@ -1,1 +1,0 @@
-SELECT DISTINCT value FROM issue_field_history WHERE field_id = 'issuelinks'

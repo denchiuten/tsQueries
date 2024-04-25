@@ -1,3 +1,0 @@
-SELECT DISTINCT property_closed_won_reason_checkbox
-FROM hubs.deal
-WHERE property_closed_won_reason_checkbox IS NOT NULL

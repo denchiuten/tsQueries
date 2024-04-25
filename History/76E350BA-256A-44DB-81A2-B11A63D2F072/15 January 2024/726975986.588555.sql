@@ -1,1 +1,0 @@
-SELECT * FROM plumbing.vw_tool_users WHERE email = 'tszwing.wong@terrascope.com'

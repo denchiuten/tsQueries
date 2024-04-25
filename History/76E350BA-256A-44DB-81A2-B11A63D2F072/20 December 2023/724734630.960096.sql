@@ -1,9 +1,0 @@
-SELECT 
-	c.id AS child_id,
-	c.key AS child_key,
-	p.id AS parent_id,
-	p.key AS parent_key
-FROM jra.issue AS c
-INNER JOIN jra.issue AS p
-	ON c.parent_id = p.id
-WHERE c.id = 23130

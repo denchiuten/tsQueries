@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS google_sheets.capex_roadmaps

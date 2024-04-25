@@ -1,1 +1,0 @@
-SELECT * FROM slack.users WHERE id = 'USLACKBOT'

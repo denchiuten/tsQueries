@@ -1,4 +1,4 @@
-SELECT DISTINCT
+SELECT 
 	LOWER(au.email) AS email
 FROM auth0.users	 AS au
 LEFT JOIN hubs.contact_to_emails AS hc
@@ -10,5 +10,6 @@ WHERE
 	AND au.email NOT LIKE '%@gmail.com'
 	AND au.email NOT LIKE '%@mobileprogramming.com'
 	AND au.email NOT LIKE '%@mailinator.com'
-	AND au.email NOT LIKE '%@thoughtworks.com'
+	AND au.email NOT LIKE '%@guerrillamail.com'
+	AND au.email <> 'jeevanantham.c@thoughtworks.com'
 	AND hc.id IS NULL

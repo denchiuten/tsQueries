@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS plumbing."auth0 org to hubspot company mapping - sheet1"

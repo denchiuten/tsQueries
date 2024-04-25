@@ -1,4 +1,0 @@
-SELECT *
-FROM auth0.logs
-WHERE user_id IS NOT NULL
-LIMIT 1000;

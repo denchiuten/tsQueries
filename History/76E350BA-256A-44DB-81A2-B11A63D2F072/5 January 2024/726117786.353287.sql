@@ -1,1 +1,0 @@
-DELETE FROM google_calendar.attendee WHERE _fivetran_deleted IS TRUE;

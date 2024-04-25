@@ -1,7 +1,0 @@
-SELECT
-	id,
-	COUNT(CASE WHEN is_locked IS TRUE THEN * ELSE NULL END)
-
-FROM harvest.time_entry
-GROUP BY 1
-ORDER BY 1,2

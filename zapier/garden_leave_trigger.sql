@@ -10,7 +10,7 @@ INNER JOIN bob.employee_life_cycle_history AS h
 	ON e.id = h.employee_id
 	AND h._fivetran_deleted IS FALSE
 	AND h.status = 'garden leave'
-	AND h.effective_date = CURRENT_DATE
+	AND h.effective_date = CURRENT_DATE - 1
 LEFT JOIN bob.employee AS boss
 	ON e.work_reports_to_id_in_company = boss.work_employee_id_in_company
 	AND boss._fivetran_deleted IS FALSE

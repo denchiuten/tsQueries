@@ -50,6 +50,7 @@ INNER JOIN (
 WHERE 
 	1 = 1
 	AND map.development_share > 0
+	AND LOWER(e.email) = 'dhanashri.zirape@terrascope.com'
 
 UNION ALL
 
@@ -88,3 +89,4 @@ LEFT JOIN plumbing.dates AS d
 	-- between the start of the year and current date
 	ON d.date BETWEEN DATE_TRUNC('year', CURRENT_DATE) AND CURRENT_DATE
 	
+WHERE LOWER(e.email) = 'dhanashri.zirape@terrascope.com'

@@ -1,2 +1,0 @@
-SELECT * FROM linear.project WHERE id = '01548d09-9c53-40b7-a263-f2214af76772
-'

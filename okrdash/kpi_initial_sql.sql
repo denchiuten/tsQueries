@@ -35,16 +35,16 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 ------------ unique monthly users and customers (i.e., companies) from FullStory
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT 
-		DATE_TRUNC('month', e.event_time)::DATE AS datemonth,
+		LAST_DAY(e.event_time::DATE) AS datemonth,
 		'fs_usage' AS category,
 		'unique_monthly_users' AS metric_1,
 		'unique_monthly_customers' AS metric_2,
 		COUNT(DISTINCT fs.user_id) AS value_1,
 		COUNT(DISTINCT cp.parent_id) AS value_2
 	FROM fullstory_o_1jfe7s_na1.events AS e
-	INNER JOIN fullstory_o_1jfe7s_na1.vw_fs_users AS fs
+	INNER JOIN fullstory_o_1jfe7s_na1.users AS fs
 		ON e.device_id = fs.device_id
-	INNER JOIN hubs.vw_contact_to_emails AS hc
+	INNER JOIN hubs.contact_to_emails AS hc
 		ON LOWER(fs.user_email) = LOWER(hc.email)
 	INNER JOIN hubs.contact_company AS cc
 		ON hc.id = cc.contact_id
@@ -54,6 +54,22 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		ON cc.company_id = cp.child_id
 		-- Exclude Terrascope employees
 		AND cp.parent_id <> 9244595755
+	GROUP BY 1,2,3,4
+);
+
+------------ unique monthly users and customers (i.e., companies) from FullStory
+
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT 
+		LAST_DAY(e.event_time::DATE) AS datemonth,
+		'usage_minutes' AS category,
+		'total_active_minutes' AS metric_1,
+		'active_mins_per_data_plane' AS metric_2,
+		SUM(e.event_properties.active_duration_millis::INT) / 1000 / 60 AS value_1,
+		SUM(e.event_properties.active_duration_millis::INT) / 1000 / 60 / COUNT(DISTINCT fs.organization_id) AS value_2
+	FROM fullstory_o_1jfe7s_na1.events AS e
+	INNER JOIN fullstory_o_1jfe7s_na1.users AS fs
+		ON e.device_id = fs.device_id
 	GROUP BY 1,2,3,4
 );
 
@@ -163,14 +179,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 			COUNT(DISTINCT map.company_id) AS n_data_planes
 		FROM fullstory_o_1jfe7s_na1.events AS e
 		INNER JOIN plumbing.auth0_to_hubspot_company AS map
-			ON e.event_properties.user_properties.organizationId_str = (
-				SELECT JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(e_inner.event_properties.user_properties), 'organizationId_str')
-				FROM fullstory_o_1jfe7s_na1.events AS e_inner
-				WHERE e_inner.event_time::DATE = e.event_time::DATE
-					AND e_inner.event_properties.user_properties IS NOT NULL
-			)
--- 		WHERE
--- 			JSON_EXTRACT_PATH_TEXT(e.event_properties::VARCHAR, 'user_properties', 'organizationId_str') <> ''
+			ON JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(e.event_properties.user_properties), 'organizationId_str') = map.auth0_id
+			AND e.event_properties.user_properties IS NOT NULL	
 		GROUP BY 1
 	) AS fs
 		ON f.date = fs.date

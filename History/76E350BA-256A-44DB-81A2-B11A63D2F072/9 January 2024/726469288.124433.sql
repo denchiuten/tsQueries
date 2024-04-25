@@ -1,1 +1,0 @@
-DROP SCHEMA gcal CASCADE;

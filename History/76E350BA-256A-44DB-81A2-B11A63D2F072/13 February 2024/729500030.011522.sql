@@ -1,1 +1,0 @@
-SELECT DISTINCT type_id FROM hubs.contact_company

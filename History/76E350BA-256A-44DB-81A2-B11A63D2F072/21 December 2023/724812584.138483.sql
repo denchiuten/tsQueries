@@ -1,1 +1,0 @@
-SELECT DISTINCT name FROM jra.field ORDER BY 1

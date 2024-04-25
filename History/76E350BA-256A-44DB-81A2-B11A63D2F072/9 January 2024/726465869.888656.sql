@@ -1,1 +1,0 @@
-SELECT DISTINCT email FROM linear.users ORDER BY 1

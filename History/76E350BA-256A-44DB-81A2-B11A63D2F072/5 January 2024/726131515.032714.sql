@@ -1,1 +1,0 @@
-SELECT DISTINCT policy_type FROM bob.employee_out_of_office
