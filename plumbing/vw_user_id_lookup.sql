@@ -48,6 +48,6 @@ FULL OUTER JOIN zoom.users AS zoom
 WHERE
 	1 = 1
 	AND b._fivetran_deleted IS FALSE
-	AND b.internal_status = 'Active'
+	AND (b.internal_status IS NULL OR b.internal_status <> 'Inactive')
 ORDER BY 1
 );
