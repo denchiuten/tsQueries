@@ -41,6 +41,10 @@ FULL OUTER JOIN tableau.users AS t
 FULL OUTER JOIN google_sheets.testmo_users AS test
 	ON LOWER(b.email) = LOWER(test.email)
 	AND test.is_active IS TRUE
+FULL OUTER JOIN zoom.users AS zoom
+	ON LOWER(b.email) = LOWER(zoom.email)
+	AND zoom.status = 'active'
+	AND zoom._fivetran_deleted IS FALSE
 WHERE
 	1 = 1
 	AND b._fivetran_deleted IS FALSE
