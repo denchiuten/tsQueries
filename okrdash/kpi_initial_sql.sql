@@ -261,6 +261,21 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 );
 
 
+------------ Drafting: monthly created tickets by L1/L2/L3 
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT 
+		t.property_createdate AS datemonth,
+		'created_tickets' AS category,
+		t.property_hs_ticket_priority AS metric_1,
+		'level' AS metric_2,
+		COUNT(t.id) AS value_1,
+		0 AS value_2
+	FROM hubs.ticket AS t
+	WHERE t._fivetran_deleted IS FALSE
+	GROUP BY 1,2
+);
+
+
 -- now drop the production table
 DROP TABLE IF EXISTS plumbing.okrdash_kpis;
 
