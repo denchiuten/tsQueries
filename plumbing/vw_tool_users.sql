@@ -131,4 +131,19 @@ CREATE OR REPLACE VIEW plumbing.vw_tool_users AS (
 	WHERE
 		1 = 1
 		AND testmo.is_active IS TRUE
+	
+	UNION ALL
+	
+	SELECT
+		'Zoom' AS tool,
+		LOWER(z.email) AS email,
+		z.id AS user_id,
+		COALESCE(emp.internal_status, 'Unknown') AS bob_status
+	FROM zoom.users AS z
+	LEFT JOIN bob.employee AS emp
+		ON LOWER(z.email) = LOWER(emp.email)
+	WHERE
+		1 = 1
+		AND z.status = 'active'
+		AND z._fivetran_deleted IS FALSE
 );
