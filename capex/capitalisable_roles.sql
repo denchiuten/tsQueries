@@ -1,8 +1,8 @@
 SELECT DISTINCT 
 	u.email,
-	e.work_department AS department,
+	e.department AS department,
 	map.team,
-	e.work_title AS title,
+	e.title AS title,
 	e.full_name,
 	cpm.completed_at,
 	p.id AS project_id,
@@ -14,10 +14,10 @@ SELECT DISTINCT
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add TRIM and LOWER to correct for trailing white space and improper capitalisation
-	ON TRIM(LOWER(map.role)) = TRIM(LOWER(e.work_title))
+	ON TRIM(LOWER(map.role)) = TRIM(LOWER(e.title))
 	
 	-- also include department in the JOIN since some job titles may exist in multiple departments
-	AND map.department = e.work_department
+	AND map.department = e.department
 INNER JOIN linear.users AS u
 	ON LOWER(e.email) = LOWER(u.email)
 LEFT JOIN linear.project_member AS mem
@@ -50,16 +50,16 @@ INNER JOIN (
 WHERE 
 	1 = 1
 	AND map.development_share > 0
-	AND LOWER(e.email) = 'dhanashri.zirape@terrascope.com'
+	AND e._fivetran_deleted IS FALSE
 
 UNION ALL
 
 -- add dummy rows for every combination of person and month
 SELECT DISTINCT 
 	u.email,
-	e.work_department AS department,
+	e.department AS department,
 	map.team,
-	e.work_title AS title,
+	e.title AS title,
 	e.full_name,
 	DATE_TRUNC('month', d.date)::DATE AS completed_at,
 	NULL AS project_id,
@@ -71,11 +71,11 @@ SELECT DISTINCT
 FROM google_sheets.capex_mapping AS map
 INNER JOIN bob.employee AS e
 	-- add RTRIM and LOWER to correct for trailing white space and improper capitalisation
-	ON RTRIM(LOWER(map.role)) = RTRIM(LOWER(e.work_title))
+	ON RTRIM(LOWER(map.role)) = RTRIM(LOWER(e.title))
 	
 	-- also include department in the JOIN since some job titles may exist in multiple departments
-	AND map.department = e.work_department
-	AND e.internal_status = 'Active'
+	AND map.department = e.department
+	AND e._fivetran_deleted IS FALSE
 INNER JOIN linear.users AS u
 	ON LOWER(e.email) = LOWER(u.email)
 LEFT JOIN linear.project_member AS mem
@@ -88,5 +88,3 @@ LEFT JOIN plumbing.dates AS d
 	
 	-- between the start of the year and current date
 	ON d.date BETWEEN DATE_TRUNC('year', CURRENT_DATE) AND CURRENT_DATE
-	
-WHERE LOWER(e.email) = 'dhanashri.zirape@terrascope.com'
