@@ -10,7 +10,7 @@ SELECT DISTINCT
 	-- project details -- 
 	proj.id,
 	proj.name,
-	proj.state,
+	INITCAP(proj.state) AS project_status,
 	DATE_TRUNC('month', proj.started_at)::DATE AS project_start_date,
 	LAST_DAY(proj.target_date) AS project_target_date,
 	LAST_DAY(proj.completed_at) AS project_completed_date
