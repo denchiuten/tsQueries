@@ -272,7 +272,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		0 AS value_2
 	FROM hubs.ticket AS t
 	WHERE t._fivetran_deleted IS FALSE
-	GROUP BY 1,2
+	GROUP BY 1,3
 );
 
 
