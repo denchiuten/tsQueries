@@ -1,20 +1,22 @@
 SELECT 
-	e.work_start_date,
+	e.id,
+	e.start_date,
 	e.full_name,
 	e.email,
-	e.work_title,
-	e.work_department,
+	e.title,
+	e.department,
 	CASE 
-		WHEN e.work_site = 'United Kingdom, England and Wales' THEN 'UK'
-		WHEN e.work_site = 'Australia, Victoria' THEN 'Australia'
-		WHEN e.work_site = 'Canada, Ontario' THEN 'Canada'
-		ELSE e.work_site
+		WHEN e.site = 'United Kingdom, England and Wales' THEN 'UK'
+		WHEN e.site = 'Australia, Victoria' THEN 'Australia'
+		WHEN e.site = 'Canada, Ontario' THEN 'Canada'
+		ELSE e.site
 		END AS country,
-	MAX(MAX(e._fivetran_synced)) OVER()::TIMESTAMP AS data_up_to
+	e._fivetran_synced::TIMESTAMP AS data_up_to
 FROM bob.employee AS e
+INNER JOIN bob.employee_life_cycle_history AS h
+	ON e.id = h.employee_id
+	AND h.end_effective_date IS NULL
+	AND h.status = 'employed'
 WHERE
 	1 = 1
-	AND e._fivetran_deleted IS FALSE
-	AND e.payroll_employment_type IN ('Permanent', 'Fixed Term (Converting)')
-	AND e.internal_status = 'Active'
-GROUP BY 1,2,3,4,5,6
+	AND e.start_date IS NOT NULL
