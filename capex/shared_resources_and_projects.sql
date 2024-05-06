@@ -41,5 +41,3 @@ INNER JOIN linear.workflow_state AS ws
 WHERE rp.roadmap_id = 'bcaa52ba-7dc0-4004-9a1f-c493dac497b3'
 	AND rp._fivetran_deleted IS FALSE
 ) AS proj
-
-ORDER BY 1,4,5
