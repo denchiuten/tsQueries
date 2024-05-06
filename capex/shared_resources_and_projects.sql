@@ -1,5 +1,6 @@
 SELECT DISTINCT 
 	e.full_name,
+	e.email,
 	e.department,
 	e.title,
 	proj.name
