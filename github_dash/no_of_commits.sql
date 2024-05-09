@@ -1,5 +1,5 @@
 SELECT 
-	c.committer_date AS commit_date,
+	DATE_TRUNC('month', c.committer_date)::DATE AS commit_date,
 	et.team_name AS team_name,
 	e.full_name,
 	e.email,
@@ -31,4 +31,4 @@ LEFT JOIN bob.employee AS e
 	AND e._fivetran_deleted IS FALSE
 	AND e.internal_status IS NULL
 GROUP BY 1,2,3,4
-ORDER BY 2
+ORDER BY 2,3
