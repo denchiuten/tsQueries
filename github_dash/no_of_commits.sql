@@ -22,11 +22,11 @@ INNER JOIN github.team AS t
 	AND t.org_id = '84950537'
 	
 -- JOIN to employee team view to identify teams --
-LEFT JOIN bob.vw_employee_team AS et
+INNER JOIN bob.vw_employee_team AS et
 	ON ue.email = et.email
 	
 -- JOIN to employee table to filter only active employees within bob --
-LEFT JOIN bob.employee AS e
+INNER JOIN bob.employee AS e
 	ON et.email = e.email 
 	AND e._fivetran_deleted IS FALSE
 	AND e.internal_status IS NULL
