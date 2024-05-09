@@ -261,17 +261,24 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 );
 
 
------------- Drafting: monthly created tickets by L1/L2/L3 
+------------ monthly created tickets by L1/L2/L3 
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
-	SELECT 
-		t.property_createdate AS datemonth,
-		'created_tickets' AS category,
-		t.property_hs_ticket_priority AS metric_1,
-		'level' AS metric_2,
-		COUNT(t.id) AS value_1,
+	SELECT
+		DATE_TRUNC('month', iss.created_at)::DATE AS datemonth,
+		'customer_support_tickets' AS category,
+		lab.name AS metric_1,
+		NULL AS metric_2,
+		COUNT(iss.id) AS value_1,
 		0 AS value_2
-	FROM hubs.ticket AS t
-	WHERE t._fivetran_deleted IS FALSE
+	FROM linear.issue AS iss
+	INNER JOIN linear.issue_label AS il
+		ON iss.id = il.issue_id
+		AND il._fivetran_deleted IS FALSE 
+	INNER JOIN linear.label AS lab
+		ON il.label_id = lab.id
+		AND lab._fivetran_deleted IS FALSE
+	WHERE iss._fivetran_deleted IS FALSE
+		AND lab.parent_id = '56577878-93a9-42c5-a902-90f2cadf60ee'
 	GROUP BY 1,3
 );
 
