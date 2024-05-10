@@ -261,7 +261,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 );
 
 
------------- monthly created tickets by L1/L2/L3 
+------------ monthly customer support tickets created by L1/L2/L3 
 INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT
 		DATE_TRUNC('month', iss.created_at)::DATE AS datemonth,
@@ -277,8 +277,38 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	INNER JOIN linear.label AS lab
 		ON il.label_id = lab.id
 		AND lab._fivetran_deleted IS FALSE
+	INNER JOIN linear.team AS t
+		ON iss.team_id = t.id
+		AND t._fivetran_deleted IS FALSE
 	WHERE iss._fivetran_deleted IS FALSE
-		AND lab.parent_id = '56577878-93a9-42c5-a902-90f2cadf60ee'
+		AND lab.parent_id = '56577878-93a9-42c5-a902-90f2cadf60ee' -- parent label of the L1/L2/L3 labels
+		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
+	GROUP BY 1,3
+);
+
+
+------------ monthly customer support tickets created by Internal/External 
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT 
+		DATE_TRUNC('month', iss.created_at)::DATE AS datemonth,
+		'customer_support_tickets2' AS category,
+		lab.name AS metric_1,
+		NULL AS metric_2,
+		COUNT(iss.id) AS value_1,
+		0 AS value_2	
+	FROM linear.issue AS iss
+	INNER JOIN linear.issue_label AS il
+		ON iss.id = il.issue_id
+		AND il._fivetran_deleted IS FALSE 
+	INNER JOIN linear.label AS lab
+		ON il.label_id = lab.id
+		AND lab._fivetran_deleted IS FALSE
+	INNER JOIN linear.team AS t
+		ON iss.team_id = t.id
+		AND t._fivetran_deleted IS FALSE
+	WHERE iss._fivetran_deleted IS FALSE
+		AND lab.parent_id = '401c14ae-2e56-4085-91b6-8bb54b85132e' -- parent label of the Internal/External labels
+		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
 	GROUP BY 1,3
 );
 
