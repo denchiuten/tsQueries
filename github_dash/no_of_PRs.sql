@@ -1,5 +1,5 @@
 SELECT 
- 	pr.created_at,
+ 	DATE_TRUNC('month', pr.created_at)::DATE AS date_created,
  	et.team_name AS team_name,
 	e.full_name,
 	e.email,
@@ -30,14 +30,16 @@ INNER JOIN bob.employee AS e
 	ON et.email = e.email 
 	AND e._fivetran_deleted IS FALSE
 	AND e.internal_status IS NULL
+
+GROUP BY 1,2,3,4
 	
 
 	
 	
--- checking the different types of users submitting pull request -- 
-SELECT DISTINCT 
-	pr.head_user_id, 
-	u.name 
-FROM github.pull_request AS pr 
-INNER JOIN github.user AS u 
-	ON pr.head_user_id = u.id
+------ checking the different types of users submitting pull request 
+-- SELECT DISTINCT 
+-- 	pr.head_user_id, 
+-- 	u.name 
+-- FROM github.pull_request AS pr 
+-- INNER JOIN github.user AS u 
+-- 	ON pr.head_user_id = u.id

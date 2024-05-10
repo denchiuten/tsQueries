@@ -277,8 +277,12 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	INNER JOIN linear.label AS lab
 		ON il.label_id = lab.id
 		AND lab._fivetran_deleted IS FALSE
+	INNER JOIN linear.team AS t
+		ON iss.team_id = t.id
+		AND t._fivetran_deleted IS FALSE
 	WHERE iss._fivetran_deleted IS FALSE
-		AND lab.parent_id = '56577878-93a9-42c5-a902-90f2cadf60ee'
+		AND lab.parent_id = '56577878-93a9-42c5-a902-90f2cadf60ee' -- parent label of the L1/L2/L3 labels
+		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
 	GROUP BY 1,3
 );
 
