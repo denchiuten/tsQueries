@@ -3,6 +3,7 @@ SELECT
 	et.team_name AS team_name,
 	e.full_name,
 	e.email,
+	r.name,
 	COUNT(c.sha) AS number_of_commits
 	 
 FROM github.commit AS c
@@ -30,5 +31,10 @@ INNER JOIN bob.employee AS e
 	ON et.email = e.email 
 	AND e._fivetran_deleted IS FALSE
 	AND e.internal_status IS NULL
-GROUP BY 1,2,3,4
-ORDER BY 2,3
+
+-- JOIN to repo table to group by repository level -- 	
+INNER JOIN github.repository AS r
+	ON c.repository_id = r.id
+	
+GROUP BY 1,2,3,4,5
+ORDER BY 2,3,5
