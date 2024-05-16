@@ -7,7 +7,7 @@ SELECT DISTINCT
 	e.email,
 	COUNT(c.sha) AS commit_count,
 	DATE_TRUNC('month', c.committer_date) AS commit_date
-FROM github.branch_commit_relation AS bc
+FROM github.branch_commit_relation AS bcr
 INNER JOIN github.commit AS c
 	ON bcr.commit_sha = c.sha
 INNER JOIN github.repository AS r
@@ -34,4 +34,5 @@ INNER JOIN bob.employee AS e
 	AND e.internal_status IS NULL
 GROUP BY 1,2,3,4,5,6,8
 ORDER BY 2,3,4
+	
 	
