@@ -7,7 +7,7 @@ SELECT DISTINCT
 	e.email,
 	COUNT(c.sha) AS commit_count,
 	DATE_TRUNC('month', c.committer_date) AS commit_date
-FROM github.branch_commit_relation AS bcr
+FROM github.branch_commit_relation AS bc
 INNER JOIN github.commit AS c
 	ON bcr.commit_sha = c.sha
 INNER JOIN github.repository AS r

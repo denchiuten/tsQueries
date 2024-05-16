@@ -1,14 +1,19 @@
-SELECT DISTINCT
-	rep.name,
-	rep.default_branch,
+SELECT 
+	rep.name AS repository_name,
 	r.name AS release_name,
-	DATE_TRUNC('month', r.published_at)::DATE, 
-	r.tag_name,
-	COUNT(r.id) AS no_of_release
+	DATE_TRUNC('month', r.published_at)::DATE,
+	t.name, 
+	COUNT(r.tag_name) AS no_of_tags
 FROM github.release AS r
 INNER JOIN github.repository AS rep
 	ON r.repository_id = rep.id
+INNER JOIN github.repo_team AS rt
+	ON rep.id = rt.repository_id
+INNER JOIN github.team AS t
+	ON rt.team_id = t.id
 WHERE r.name NOT ILIKE '%.stg'
-	AND r.name IS NOT NULL 
-GROUP BY 1,2,3,4,5
+GROUP BY 1,2,3,4
 ORDER BY 1
+
+
+
