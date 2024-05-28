@@ -1,4 +1,5 @@
 SELECT
+	imp._fivetran_synced AS data_up_to,
 	com.property_name AS company_name,
 	deal.property_dealname AS deal_name,
 	deal.deal_id AS deal_id,
