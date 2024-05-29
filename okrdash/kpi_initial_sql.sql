@@ -312,15 +312,41 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	GROUP BY 1,3
 );
 
+
+------------ monthly customer support tickets created by From Terra/Direct From Client 
+INSERT INTO plumbing.okrdash_kpis_RUNNING (
+	SELECT 
+		DATE_TRUNC('month', iss.created_at)::DATE AS datemonth,
+		'customer_support_tickets3' AS category,
+		lab.name AS metric_1,
+		NULL AS metric_2,
+		COUNT(iss.id) AS value_1,
+		0 AS value_2	
+	FROM linear.issue AS iss
+	INNER JOIN linear.issue_label AS il
+		ON iss.id = il.issue_id
+		AND il._fivetran_deleted IS FALSE 
+	INNER JOIN linear.label AS lab
+		ON il.label_id = lab.id
+		AND lab._fivetran_deleted IS FALSE
+	INNER JOIN linear.team AS t
+		ON iss.team_id = t.id
+		AND t._fivetran_deleted IS FALSE
+	WHERE iss._fivetran_deleted IS FALSE
+		AND lab.parent_id = 'ad10146c-c589-441a-b8ba-6526add7ccd5' -- parent label of the From Terra/Direct from Client labels
+		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
+	GROUP BY 1,3
+);
+
 ------------ deals by channels
 INSERT INTO plumbing.okrdash_kpis_RUNNING (	
-	SELECT DISTINCT
-		d.property_closedate AS datemonth,
+	SELECT
+		d.property_createdate AS datemonth,
 		'deals_by_channel' AS category,
 		d.property_channel_lead_origination_grouped_ AS metric_1,
 		dp.label AS metric_2,
 		COUNT(d.deal_id) AS value_1,
-		d.property_amount AS value_2
+		d.property_acv_usd AS value_2
 	FROM hubs.deal AS d
 	INNER JOIN hubs.deal_pipeline_stage AS dp
 		ON d.deal_pipeline_stage_id = dp.stage_id
