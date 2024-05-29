@@ -320,7 +320,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		d.property_channel_lead_origination_grouped_ AS metric_1,
 		dp.label AS metric_2,
 		COUNT(d.deal_id) AS value_1,
-		d.property_amount AS value_2
+		d.property_acv_usd AS value_2
 	FROM hubs.deal AS d
 	INNER JOIN hubs.deal_pipeline_stage AS dp
 		ON d.deal_pipeline_stage_id = dp.stage_id
