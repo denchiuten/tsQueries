@@ -344,14 +344,18 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 		d.property_createdate AS datemonth,
 		'deals_by_channel' AS category,
 		d.property_channel_lead_origination_grouped_ AS metric_1,
-		dp.label AS metric_2,
+		dps.label AS metric_2,
 		COUNT(d.deal_id) AS value_1,
 		d.property_acv_usd AS value_2
 	FROM hubs.deal AS d
-	INNER JOIN hubs.deal_pipeline_stage AS dp
-		ON d.deal_pipeline_stage_id = dp.stage_id
-		AND dp._fivetran_deleted IS FALSE
+	INNER JOIN hubs.deal_pipeline_stage AS dps
+		ON d.deal_pipeline_stage_id = dps.stage_id
+		AND dps._fivetran_deleted IS FALSE
+	INNER JOIN hubs.deal_pipeline AS dp
+		ON dps.pipeline_id = dp.pipeline_id
+		AND dps._fivetran_deleted IS FALSE
 	WHERE d._fivetran_deleted IS FALSE
+		AND dp.pipeline_id = '19800993'
 	GROUP BY 1,3,4,6
 );
 
