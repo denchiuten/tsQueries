@@ -312,6 +312,22 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	GROUP BY 1,3
 );
 
+------------ deals by channels
+INSERT INTO plumbing.okrdash_kpis_RUNNING (	
+	SELECT DISTINCT
+		d.property_closedate AS datemonth,
+		'deals_by_channel' AS category,
+		d.property_channel_lead_origination_grouped_ AS metric_1,
+		dp.label AS metric_2,
+		COUNT(d.deal_id) AS value_1,
+		d.property_amount AS value_2
+	FROM hubs.deal AS d
+	INNER JOIN hubs.deal_pipeline_stage AS dp
+		ON d.deal_pipeline_stage_id = dp.stage_id
+		AND dp._fivetran_deleted IS FALSE
+	WHERE d._fivetran_deleted IS FALSE
+	GROUP BY 1,3,4,6
+);
 
 -- now drop the production table
 DROP TABLE IF EXISTS plumbing.okrdash_kpis;
