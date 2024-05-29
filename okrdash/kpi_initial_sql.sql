@@ -315,7 +315,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 ------------ deals by channels
 INSERT INTO plumbing.okrdash_kpis_RUNNING (	
 	SELECT DISTINCT
-		d.property_closedate AS datemonth,
+		d.property_createdate AS datemonth,
 		'deals_by_channel' AS category,
 		d.property_channel_lead_origination_grouped_ AS metric_1,
 		dp.label AS metric_2,
