@@ -359,6 +359,24 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	GROUP BY 1,3,4,6
 );
 
+
+------------ gross margin
+INSERT INTO plumbing.okrdash_kpis_RUNNING (	
+	SELECT 
+		a.date AS datemonth,
+		'gross_margin' AS category,
+		'revenue' AS metric_1,
+		'cogs' AS metric_2,
+		SUM(CASE WHEN a.mv_cost_centre ILIKE 'Revenue - %' THEN value ELSE 0 END) AS value_1,
+		SUM(CASE WHEN a.mv_cost_centre ILIKE 'COGS - %' THEN value ELSE 0 END) AS value_2
+	FROM finance.actuals AS a
+	WHERE a.close_date = (SELECT MAX(fa.close_date) FROM finance.actuals AS fa)
+		AND a.date <= a.close_date
+		AND a.pnl IS TRUE
+	GROUP BY 1
+);
+
+
 -- now drop the production table
 DROP TABLE IF EXISTS plumbing.okrdash_kpis;
 
