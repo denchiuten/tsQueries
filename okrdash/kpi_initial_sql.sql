@@ -283,6 +283,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	WHERE iss._fivetran_deleted IS FALSE
 		AND lab.parent_id = '56577878-93a9-42c5-a902-90f2cadf60ee' -- parent label of the L1/L2/L3 labels
 		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
+		AND iss.number NOT IN (1294, 1295, 1311, 1312, 1313, 1314, 1315, 1316, 1317)
+		-- old tickets created in may for tracking of old issues, advised by David to exclude them
 	GROUP BY 1,3
 );
 
@@ -309,6 +311,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	WHERE iss._fivetran_deleted IS FALSE
 		AND lab.parent_id = '401c14ae-2e56-4085-91b6-8bb54b85132e' -- parent label of the Internal/External labels
 		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
+		AND iss.number NOT IN (1294, 1295, 1311, 1312, 1313, 1314, 1315, 1316, 1317) 
+		-- old tickets created in may for tracking of old issues, advised by David to exclude them
 	GROUP BY 1,3
 );
 
@@ -335,6 +339,8 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	WHERE iss._fivetran_deleted IS FALSE
 		AND lab.parent_id = 'ad10146c-c589-441a-b8ba-6526add7ccd5' -- parent label of the From Terra/Direct from Client labels
 		AND t.id = '9537508a-bffa-4b37-9bf8-31b98fe7bcf6' -- only include Customer Support team tickets
+		AND iss.number NOT IN (1294, 1295, 1311, 1312, 1313, 1314, 1315, 1316, 1317)
+		-- old tickets created in may for tracking of old issues, advised by David to exclude them
 	GROUP BY 1,3
 );
 
