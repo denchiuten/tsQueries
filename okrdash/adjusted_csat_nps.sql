@@ -1,9 +1,9 @@
 SELECT DISTINCT
 	fb.record_id,
 	fb.survey_name,
-	fb.date::DATE AS date_submitted,
-	fb.object_create_date_time,
-	fb.object_last_modified_date_time,
+	fb.date_formatted_::DATE AS date_submitted,
+	fb.object_create_date_time_formatted_::DATE AS date_created,
+	fb.object_last_modified_date_time_formatted_::DATE AS date_last_modified,
 	COALESCE(opt.label, '*Sector Missing') AS sector,
 	com.property_country_menu_ AS country,
 	com.id AS company_id,
@@ -16,7 +16,7 @@ SELECT DISTINCT
 	fb.how_would_you_rate_your_overall_experience_with_terrascope_number_1 AS overall_rating,
 	cfs.property_csat_rating AS csat,
 	fb.rating AS nps_score,
-	fb.feedback_sentiment AS promoter_tier,
+	INITCAP(fb.feedback_sentiment) AS promoter_tier,
 	fb.response,
 	com_to_csm.csm_first,
 	com_to_csm.csm_last
