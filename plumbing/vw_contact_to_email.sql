@@ -2,7 +2,7 @@
 -- in hubs.contact, multiple secondary email addresses may be nested in a single column property_hs_additional_emails which can't be used for joins
 
 -- use a temporary table first to minimise the time the production table is dropped
-CREATE OR REPLACE VIEW hubs.vw_contact_to_emails AS 
+CREATE OR REPLACE VIEW hubs.contact_to_emails AS 
 -- Create a temporary numbers table
 WITH numbers AS (
 	SELECT 1 AS n UNION ALL
