@@ -13,8 +13,8 @@ SELECT
 	deal.property_end_date::DATE AS end_date, 
 	COALESCE(deal.property_amount_in_home_currency,0) AS tcv,
 	COALESCE(deal.property_acv_usd,0) AS acv,
-	COALESCE(deal.property_arr_usd_,0) AS arr,
-	MAX(MAX(deal._fivetran_synced)) OVER()::TIMESTAMP AS last_updated	
+	COALESCE(deal.property_annual_recurring_revenue_usd_,0) AS arr,
+	deal._fivetran_synced::TIMESTAMP AS last_updated	
 FROM hubs.deal AS deal
 INNER JOIN hubs.deal_company AS dc
 	ON deal.deal_id = dc.deal_id
@@ -41,4 +41,3 @@ LEFT JOIN hubs.property_option AS ind_opt
 WHERE
 	1 = 1
 	AND deal.deal_pipeline_id = 19800993 -- id for sales_pipeline_v2
-GROUP BY 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
