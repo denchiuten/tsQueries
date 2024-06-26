@@ -29,9 +29,9 @@ SELECT DISTINCT
 -- 	cfs.property_csat_rating AS csat,
 	fb.nps_score AS nps_score,
 	INITCAP(fb.feedback_sentiment) AS promoter_tier,
-	fb.response
--- 	com_to_csm.csm_first,
--- 	com_to_csm.csm_last
+	fb.response,
+	com_to_csm.csm_first,
+	com_to_csm.csm_last
 FROM google_sheets.hubspot_feedback_responses AS fb
 INNER JOIN hubs.contact AS c
 	ON fb.contact_id = c.id
@@ -61,24 +61,24 @@ LEFT JOIN hubs.property_option AS opt
 	)
 LEFT JOIN hubs.vw_child_to_parent AS cp
 	ON com.id = cp.child_id
--- LEFT JOIN (
--- 	SELECT DISTINCT
--- 		dc.company_id,
--- 		deal.property_dealname,
--- 		csm.first_name AS csm_first,
--- 		csm.last_name AS csm_last
--- 	FROM hubs.deal_company AS dc
--- 	INNER JOIN hubs.deal AS deal
--- 		ON dc.deal_id = deal.deal_id
--- 		AND deal.deal_pipeline_id = 11272062 -- ID for Customer Success deal pipeline
--- 		AND deal.property_customer_success_manager IS NOT NULL
--- 	LEFT JOIN hubs.owner AS csm
--- 		ON deal.property_customer_success_manager = csm.owner_id
--- 	WHERE
--- 		1 = 1
--- 		AND dc.type_id = 5
--- ) AS com_to_csm
--- 	ON com.id = com_to_cs m.company_id
+LEFT JOIN (
+	SELECT DISTINCT
+		dc.company_id,
+		deal.property_dealname,
+		csm.first_name AS csm_first,
+		csm.last_name AS csm_last
+	FROM hubs.deal_company AS dc
+	INNER JOIN hubs.deal AS deal
+		ON dc.deal_id = deal.deal_id
+		AND deal.deal_pipeline_id = 11272062 -- ID for Customer Success deal pipeline
+		AND deal.property_customer_success_manager IS NOT NULL
+	LEFT JOIN hubs.owner AS csm
+		ON deal.property_customer_success_manager = csm.owner_id
+	WHERE
+		1 = 1
+		AND dc.type_id = 5
+) AS com_to_csm
+	ON com.id = com_to_csm.company_id
 WHERE
 	1 = 1	
 	AND (com.id IS NULL OR com.id NOT IN (9244595755, 9457745973)) -- exclude submissions from Terrascope and The Neighbourhood
