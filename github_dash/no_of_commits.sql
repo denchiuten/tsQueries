@@ -2,7 +2,9 @@ SELECT DISTINCT
 	r.id,
 	r.name AS repo_name,
 	bcr.branch_name AS branch_name,
-	et.team_name,
+	e.department,
+	clv.name AS team_name,
+	e.id,
 	e.full_name,
 	e.email,
 	COUNT(c.sha) AS commit_count,
@@ -31,8 +33,14 @@ INNER JOIN bob.vw_employee_team AS et
 INNER JOIN bob.employee AS e
 	ON et.email = e.email 
 	AND e._fivetran_deleted IS FALSE
-	AND e.internal_status IS NULL
-GROUP BY 1,2,3,4,5,6,8
+	AND e.lifecycle_status = 'Employed'
+INNER JOIN bob.employee_work_history AS eh
+	ON e.id = eh.employee_id 
+INNER JOIN bob.company AS clv
+	ON JSON_EXTRACT_PATH_TEXT(eh.custom_columns, 'column_1681191721226') = clv.id
+WHERE JSON_EXTRACT_PATH_TEXT(eh.custom_columns, 'column_1681191721226') <> ''
+	AND eh.is_current IS TRUE
+GROUP BY 1,2,3,4,5,6,7,8,10
 ORDER BY 2,3,4
 	
 	
