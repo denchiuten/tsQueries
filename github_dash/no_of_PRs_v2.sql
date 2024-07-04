@@ -1,42 +1,39 @@
-SELECT
-	r.name AS repository_name,
-	bcr.branch_name AS branch_name,
-	e.department,
-	clv.name AS team_name,
-	e.id AS employee_id,
-	e.full_name,
-	e.email,
-	COUNT(DISTINCT pr.id) AS pr_count,
-	DATE_TRUNC('month', pr.created_at) AS pr_date
-
-FROM github.pull_request AS pr 
-INNER JOIN github.repository AS r
-	ON pr.base_repo_id = r.id
-INNER JOIN github.commit_pull_request AS cpr -- for commit pull relations
-	ON pr.id = cpr.pull_request_id
-INNER JOIN github.branch_commit_relation AS bcr -- to get repo branch names
-	ON cpr.commit_sha = bcr.commit_sha
-INNER JOIN github.commit AS c -- to get individual commiters
+SELECT 
+	r.id AS repo_id,
+	r.name AS repo_name,
+	bcr.branch_name,
+	cpr.pull_request_id,
+	cpr.commit_sha,
+	c.committer_date,
+	pr.created_at AS pr_create_date,
+	CASE WHEN u.id = uwe.id THEN e.full_name ELSE c.committer_name END AS committer_name,
+	CASE WHEN u.id = uwe.id THEN e.email ELSE c.committer_email END AS committer_email,
+	et.department AS employee_dept,
+	et.team_name AS employee_team
+FROM github.commit_pull_request AS cpr -- all commits that are associated with a pull request (prior to squash)
+INNER JOIN github.commit AS c -- join to commit table to get commit details
 	ON cpr.commit_sha = c.sha
-
-INNER JOIN github.user_email AS ue
+LEFT JOIN github.pull_request AS pr
+	ON cpr.pull_request_id = pr.id
+		
+LEFT JOIN github.user_email AS ue
 	ON c.author_email = ue.email -- using author email instead of committer here
-INNER JOIN github.user as u
+LEFT JOIN github.user as u
 	ON ue.user_id = u.id 
-	AND u.type != 'Bot' -- filter out bot users if any 
-INNER JOIN github.user_with_email AS uwe
-	ON u.id = uwe.id -- to get users actual terrascope email for joining to bob 
-INNER JOIN bob.employee AS e
+	AND u.type <> 'Bot' -- filter out bot users if any 
+LEFT JOIN github.user_with_email AS uwe -- LEFT JOIN as not all committer has a terrascope email (external staffs)
+	ON u.id = uwe.id 
+	
+LEFT JOIN bob.employee AS e
 	ON uwe.email = e.email 
 	AND e._fivetran_deleted IS FALSE 
-	AND e.lifecycle_status = 'Employed' -- getting only active employees 
-INNER JOIN bob.employee_work_history AS eh
-	ON e.id = eh.employee_id -- join for filtering on bob company table later on
-INNER JOIN bob.company AS clv
-	ON JSON_EXTRACT_PATH_TEXT(eh.custom_columns, 'column_1681191721226') = clv.id
+	AND e.lifecycle_status = 'Employed' -- filtering for only active employee if committer is a terrascope staff 
+LEFT JOIN bob.vw_employee_team AS et
+	ON e.id = et.employee_id
+	
+LEFT JOIN github.repository AS r
+	ON pr.base_repo_id = r.id 
+INNER JOIN github.branch_commit_relation AS bcr
+	ON cpr.commit_sha = bcr.commit_sha
 
-WHERE JSON_EXTRACT_PATH_TEXT(eh.custom_columns, 'column_1681191721226') <> ''
-	AND eh.is_current IS TRUE 
-
-GROUP BY 1,2,3,4,5,6,7,9
-
+WHERE pr.created_at IS NOT NULL
