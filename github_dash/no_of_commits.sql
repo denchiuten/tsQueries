@@ -31,4 +31,4 @@ INNER JOIN bob.company AS clv
 	ON JSON_EXTRACT_PATH_TEXT(eh.custom_columns, 'column_1681191721226') = clv.id	
 WHERE JSON_EXTRACT_PATH_TEXT(eh.custom_columns, 'column_1681191721226') <> ''
 	AND eh.is_current IS TRUE
-GROUP BY 1,2,3,4,5,6,7,8,10	
+GROUP BY 1,2,3,4,5,6,7,8,10
