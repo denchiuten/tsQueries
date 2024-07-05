@@ -8,7 +8,7 @@ CREATE VIEW bob.vw_ooo_dates AS (
     INNER JOIN bob.employee AS e
     		ON ooo.employee_id = e.id
     		AND e._fivetran_deleted IS FALSE
-    		AND e.internal_status = 'Active'
+    		AND e.status = 'Active'
     INNER JOIN plumbing.dates AS d
     		ON d.date BETWEEN ooo.start_date AND ooo.end_date
 	WHERE
