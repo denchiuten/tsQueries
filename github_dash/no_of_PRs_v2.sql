@@ -6,8 +6,8 @@ SELECT
 	cpr.commit_sha,
 	c.committer_date,
 	pr.created_at AS pr_create_date,
-	COALESCE(e.full_name, c.committer_name) AS committer_name, 
-	COALESCE(e.email, c.committer_email) AS committer_email,
+	COALESCE(e.full_name, c.author_name) AS committer_name, 
+	COALESCE(e.email, c.author_email) AS committer_email,
  	et.department AS employee_dept,
 	et.team_name AS employee_team
 FROM github.commit_pull_request AS cpr -- all commits that are associated with a pull request (prior to squash)
