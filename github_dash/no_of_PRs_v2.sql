@@ -25,7 +25,8 @@ LEFT JOIN bob.employee AS e
 	AND e.lifecycle_status = 'Employed' -- filtering for only active employee if committer is a terrascope staff 
 LEFT JOIN bob.vw_employee_team AS et
 	ON e.id = et.employee_id
-	AND et.team_name NOT IN ('Design', 'Ops & Admin', 'Product Management', 'Sustainability')
+	AND et.department = 'Technology'
+	AND et.team_name != 'IT Support'
 INNER JOIN github.repository AS r -- to get repository and branch name
 	ON pr.base_repo_id = r.id 
 INNER JOIN github.branch_commit_relation AS bcr
