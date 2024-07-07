@@ -26,3 +26,4 @@ LEFT JOIN bob.employee AS e
 LEFT JOIN bob.vw_employee_team AS et
 	ON e.id = et.employee_id
 	AND et.department = 'Technology'
+	AND et.team_name != 'IT Support'
