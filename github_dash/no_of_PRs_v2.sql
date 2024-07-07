@@ -4,8 +4,8 @@ SELECT
 	bcr.branch_name,
 	cpr.pull_request_id,
 	cpr.commit_sha,
-	c.committer_date,
-	pr.created_at AS pr_create_date,
+	c.committer_date::DATE,
+	pr.created_at::DATE AS pr_create_date,
 	COALESCE(e.full_name, c.author_name) AS committer_name, 
 	COALESCE(e.email, c.author_email) AS committer_email,
  	et.department AS employee_dept,
@@ -25,6 +25,7 @@ LEFT JOIN bob.employee AS e
 	AND e.lifecycle_status = 'Employed' -- filtering for only active employee if committer is a terrascope staff 
 LEFT JOIN bob.vw_employee_team AS et
 	ON e.id = et.employee_id
+	AND et.team_name NOT IN ('Design', 'Ops & Admin', 'Product Management', 'Sustainability')
 INNER JOIN github.repository AS r -- to get repository and branch name
 	ON pr.base_repo_id = r.id 
 INNER JOIN github.branch_commit_relation AS bcr
