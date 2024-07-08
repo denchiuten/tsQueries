@@ -25,5 +25,12 @@ LEFT JOIN bob.employee AS e
 	AND e.lifecycle_status = 'Employed' -- getting only active employees 
 LEFT JOIN bob.vw_employee_team AS et
 	ON e.id = et.employee_id
-	AND et.department = 'Technology'
-	AND et.team_name != 'IT Support'
+	AND et.team_id IN ('260856300', -- Applications Engineering
+                           '256407635', -- Architecture
+                           '261185810', -- CloudOps
+                           '256407654', -- Data Science
+                           '256407652', -- DevSecOps
+                           '256407642', -- Engineering
+                           '256407643', -- Implementation
+                           '256407644', -- Platform Engineering
+                           '256407655') -- Solution Engineering
