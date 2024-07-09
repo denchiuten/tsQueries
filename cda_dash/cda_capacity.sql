@@ -22,7 +22,7 @@ WITH assignments AS (
 	WHERE
 		1 = 1
 		AND i._fivetran_deleted IS FALSE
-		AND COALESCE(i.due_date, mi.target_date) BETWEEN DATE_TRUNC('month', CURRENT_DATE) AND DATEADD(YEAR, 1, CURRENT_DATE)
+-- 		AND COALESCE(i.due_date, mi.target_date) BETWEEN DATE_TRUNC('month', CURRENT_DATE) AND DATEADD(YEAR, 1, CURRENT_DATE)
 	GROUP BY 1,2,3
 )
 
