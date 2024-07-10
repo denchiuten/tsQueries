@@ -1,4 +1,5 @@
 SELECT
+	deal._fivetran_synced AS last_updated,
 	stage.label AS stage,
 	o.first_name || ' ' || o.last_name AS owner,
 	com.property_country_menu_ AS country,
