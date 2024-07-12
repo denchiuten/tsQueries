@@ -168,7 +168,7 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	SELECT
 		f.date AS datemonth,
 		'cloud_costs' AS category,
-		'n_data_planes' AS metric_1,
+		fs.company_name AS metric_1,
 		'external_cloud_spend' AS metric_2,
 		fs.n_data_planes AS value_1,
 		SUM(f.value) AS value_2
@@ -176,12 +176,17 @@ INSERT INTO plumbing.okrdash_kpis_RUNNING (
 	INNER JOIN (
 		SELECT 
 			LAST_DAY(e.event_time::DATE) AS date,
-			COUNT(DISTINCT map.company_id) AS n_data_planes
+			COUNT(DISTINCT map.company_id) AS n_data_planes,
+			map.company_id AS company_id,
+			c.property_name AS company_name
 		FROM fullstory_o_1jfe7s_na1.events AS e
 		INNER JOIN plumbing.auth0_to_hubspot_company AS map
 			ON JSON_EXTRACT_PATH_TEXT(JSON_SERIALIZE(e.event_properties.user_properties), 'organizationId_str') = map.auth0_id
-			AND e.event_properties.user_properties IS NOT NULL	
-		GROUP BY 1
+			AND e.event_properties.user_properties IS NOT NULL
+		INNER JOIN hubs.company AS c
+			ON map.company_id = c.id
+			AND c._fivetran_deleted IS FALSE	
+		GROUP BY 1,3,4
 	) AS fs
 		ON f.date = fs.date
 	WHERE
