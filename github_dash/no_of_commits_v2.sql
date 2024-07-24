@@ -4,8 +4,10 @@ SELECT
 	bcr.branch_name AS branch_name,
 	c.sha AS commit_id,
 	c.committer_date::DATE AS commit_date,
-	COALESCE(e.full_name, c.author_name) AS committer_name, 
-	COALESCE(e.email, c.author_email) AS committer_email,
+	e.full_name AS committer_name,
+	c.author_name AS github_author_name,
+	e.email AS committer_email,
+	c.author_email AS github_author_email,
 	et.department AS employee_dept,
 	et.team_name AS employee_team
 FROM github.commit AS c 
