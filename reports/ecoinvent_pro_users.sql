@@ -1,8 +1,7 @@
-SELECT
+SELECT DISTINCT
 	org.name,
 	com.property_name AS customer,
-	u.email,
-	r.name AS role
+	u.email
 FROM auth0.organization AS org
 INNER JOIN google_sheets.customer_config_supporteddbs AS db
 	ON org.id = db.org_id
@@ -16,7 +15,7 @@ INNER JOIN auth0.users AS u
 	AND u.email NOT LIKE '%@terrascope.com'
 INNER JOIN auth0.role AS r
 	ON omr.id = r.id
-	AND r.name = 'role://manage-api/driver-tree-user'
+	AND r.name IN ('role://manage-api/driver-tree-user', 'role://manage-api/manage-module-user')
 INNER JOIN plumbing.auth0_to_hubspot_company AS map
 	ON org.id = map.auth0_id
 LEFT JOIN hubs.company AS com
