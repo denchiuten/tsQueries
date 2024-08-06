@@ -2,7 +2,7 @@ SELECT
 	o.name AS org_name,
 	o.id AS organization_id,
 	CASE 
-		WHEN map.auth0_id IS NULL THEN 'Internal'
+		WHEN map.auth_0_id IS NULL THEN 'Internal'
 		ELSE 'External'
 		END AS data_plane_type,
 	con.app_environment,
@@ -21,8 +21,8 @@ INNER JOIN auth0.role AS r
 INNER JOIN auth0.organization AS o
 	ON omr.organization_id = o.id
 	AND o._fivetran_deleted IS FALSE
-LEFT JOIN plumbing.auth0_to_hubspot_company AS map
-	ON o.id = map.auth0_id
+LEFT JOIN plumbing.auth_0_to_hubspot_company AS map
+	ON o.id = map.auth_0_id
 LEFT JOIN google_sheets.customer_config AS con
 	ON omr.organization_id = con.org_id
 WHERE
