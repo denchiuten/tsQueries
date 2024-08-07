@@ -1,3 +1,15 @@
+--------------------- check if hubspot link is added into the Linear project and pull the project name
+
+SELECT DISTINCT
+	p.name AS project_name,
+	p.url AS linear_project_link,
+	pl.url AS attached_hubspot_company_link
+FROM linear.project AS p
+INNER JOIN linear.project_link AS pl
+	ON p.id = pl.project_id
+WHERE pl.url = -- HubSpot company link --
+
+
 --------------------- extracting basic information of customer from hubspot
 
 SELECT DISTINCT
@@ -20,7 +32,7 @@ INNER JOIN hubs.company AS c
 WHERE SPLIT_PART('https://app.hubspot.com/contacts/22313216/record/0-2/9717757750', '/', 8) = c.id
 
 
---------------------- extracting involved team members from Linear
+--------------------- extracting involved team members from Linear issue assignees 
 
 SELECT DISTINCT
 	SPLIT_PART(pl.url, '/', 8) AS company_id, 
@@ -28,29 +40,30 @@ SELECT DISTINCT
 	pl.url,
 	e.full_name AS employee_name,
 	e.title AS employee_work_title,
-	'Terrascope' AS organization
+	'Terrascope' AS organization		
 FROM linear.project AS p
-LEFT JOIN linear.project_link AS pl
+INNER JOIN linear.project_link AS pl
 	ON p.id = pl.project_id
-INNER JOIN linear.project_member AS pm
-	ON p.id = pm.project_id
-	AND pm._fivetran_deleted IS FALSE
+INNER JOIN linear.issue AS i
+	ON p.id = i.project_id
+	AND i._fivetran_deleted IS FALSE
 INNER JOIN linear.users AS u
-	ON pm.member_id = u.id 
+	ON i.assignee_id = u.id
 	AND u._fivetran_deleted IS FALSE
 INNER JOIN bob.employee AS e
 	ON u.email = e.email
-	AND e._fivetran_deleted IS FALSE	
--- WHERE p.name ILIKE 'IM - %'
-WHERE p.name = 'IM - MediaCorp 2022 (Apr-Mar)'
--- 	AND SPLIT_PART('https://app.hubspot.com/contacts/22313216/record/0-2/9717757750', '/', 8) = c.id
+	AND e._fivetran_deleted IS FALSE
+WHERE p.name ILIKE 'IM - %'
+-- WHERE p.name = 'IM - MediaCorp 2022 (Apr-Mar)'
+	AND SPLIT_PART('https://app.hubspot.com/contacts/22313216/record/0-2/9717757750', '/', 8) = c.id
 	AND p._fivetran_deleted IS FALSE
-
+		
 
 
 --------------------- extracting platform users from Auth0
 
 SELECT DISTINCT
+    'IM - MediaCorp 2022 (Apr-Mar)' AS project_name,
     c.property_name AS company_name,
     cont.property_firstname || ' ' || cont.property_lastname AS name,
     cont.property_jobtitle,
@@ -72,7 +85,7 @@ SELECT DISTINCT
 --     	ELSE 'Other'
 --  		END AS access_type,	
     CASE 
-        WHEN map.auth0_id IS NULL THEN 'Internal'
+        WHEN map.auth_0_id IS NULL THEN 'Internal'
         ELSE 'External'
         END AS data_plane_type
 FROM auth0.users AS u
@@ -93,13 +106,14 @@ INNER JOIN auth0.role AS r
 INNER JOIN auth0.organization AS o
     ON omr.organization_id = o.id
     AND o._fivetran_deleted IS FALSE
-LEFT JOIN plumbing.auth0_to_hubspot_company AS map
-    ON o.id = map.auth0_id
+LEFT JOIN plumbing.auth_0_to_hubspot_company AS map
+    ON o.id = map.auth_0_id
 LEFT JOIN google_sheets.customer_config AS con
     ON omr.organization_id = con.org_id
 WHERE u._fivetran_deleted IS FALSE
     AND data_plane_type = 'External'
     AND LOWER(u.email) NOT ILIKE '%@terrascope.com'
 	AND c.property_name = 'Mediacorp Pte Ltd'
-GROUP BY 1,2,3,4,6
+GROUP BY 1,2,3,4,5,7
 ORDER BY 1
+
